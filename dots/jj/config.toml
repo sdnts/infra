@@ -1,0 +1,24 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[user]
+name = "Siddhant"
+email = "git@sdnts.dev"
+
+[signing]
+backend = "ssh"
+key = "~/.ssh/id_ed25519.pub"
+behavior = "drop"
+
+[git]
+sign-on-push = true
+
+[ui]
+default-command = "log"
+
+[revsets]
+bookmark-advance-to = 'closest_pushable(@)'
+
+[revset-aliases]
+'closest_pushable(to)' = '''
+  heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))
+'''

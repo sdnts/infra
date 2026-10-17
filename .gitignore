@@ -1,0 +1,13 @@
+.DS_Store
+node_modules
+
+dots/jj/repos
+
+dots/fish/fish_variables
+
+dots/pi/agent/sessions
+dots/pi/agent/auth.json
+dots/pi/agent/models-store.json
+dots/pi/agent/mcp-cache.json
+dots/pi/agent/trust.json
+dots/pi/cache

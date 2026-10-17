@@ -1,0 +1,5 @@
+Host *
+  User sdnts
+  SetEnv TERM=xterm-256color
+  ServerAliveInterval 15
+  ServerAliveCountMax 3

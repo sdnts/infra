@@ -1,0 +1,15 @@
+{ ... }:
+{
+  system.stateVersion = 7;
+
+  networking = {
+    hostName = "hq";
+    localHostName = "hq";
+    computerName = "hq";
+  };
+
+  home-manager.users.sdnts = {
+    home.stateVersion = "26.05";
+    home.packages = [ ];
+  };
+}

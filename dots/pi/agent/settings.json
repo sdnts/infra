@@ -1,0 +1,13 @@
+{
+  "lastChangelogVersion": "1.3.0",
+  "quietStartup": true,
+  "hideThinkingBlock": true,
+  "tuiMode": "regular",
+  "defaultTools": [
+    "+codemode"
+  ],
+  "enabledModels": [
+    "openai/gpt-6.1-sol:medium",
+    "openai/gpt-6-astra:max"
+  ]
+}
