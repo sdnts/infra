@@ -14,6 +14,11 @@
     restartAfterFreeze = true;
   };
 
+  homebrew = {
+    brews = [ ];
+    casks = [ ];
+  };
+
   home-manager.users.sdnts.home = {
     stateVersion = "26.05";
     packages = [ ];

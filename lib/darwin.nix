@@ -59,11 +59,19 @@ in
 
   homebrew = {
     enable = lib.mkDefault true;
+
     brews = [
 
     ]
     ++ lib.optionals isServer [ ]
     ++ lib.optionals isTTY [ "hunk" ]
+    ++ lib.optionals isHQ [ ];
+
+    casks = [
+
+    ]
+    ++ lib.optionals isServer [ ]
+    ++ lib.optionals isTTY [ ]
     ++ lib.optionals isHQ [ ];
   };
 
