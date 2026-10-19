@@ -93,5 +93,6 @@ in
         PermitRootLogin prohibit-password
       '';
     };
+    prometheus.exporters.node.enable = lib.mkDefault true;
   };
 }

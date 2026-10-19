@@ -9,6 +9,7 @@
       {
         job_name = "node";
         static_configs = [
+          { targets = [ "mainframe:9100" ]; }
           { targets = [ "bastion:9100" ]; }
           { targets = [ "vault:9100" ]; }
           { targets = [ "sentry:9100" ]; }

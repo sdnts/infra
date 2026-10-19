@@ -17,4 +17,8 @@
     home.stateVersion = "26.05";
     home.packages = [ ];
   };
+
+  services = {
+    prometheus.exporters.node.enable = false;
+  };
 }
