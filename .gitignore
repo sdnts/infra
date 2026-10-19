@@ -7,6 +7,7 @@ dots/fish/fish_variables
 
 dots/pi/agent/sessions
 dots/pi/agent/auth.json
+dots/pi/agent/crashes.json
 dots/pi/agent/models-store.json
 dots/pi/agent/mcp-cache.json
 dots/pi/agent/trust.json

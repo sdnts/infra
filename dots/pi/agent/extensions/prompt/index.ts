@@ -32,6 +32,7 @@ class PromptEditor extends CustomEditor {
   private thinkingShineStartedAt: number | undefined;
   private shineTimer: ReturnType<typeof setInterval> | undefined;
   getCost: () => number = () => 0;
+  getPresetName: () => string | undefined = () => undefined;
 
   // Pi copies the configurable editor padding onto custom editors after creation.
   // This prompt always reserves one cell on each side of its terminal region.
@@ -121,7 +122,9 @@ class PromptEditor extends CustomEditor {
     const labelWidth = Math.max(0, Math.floor(width / 2) - 3);
     const labels = [
       {
-        text: `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
+        text:
+          this.getPresetName() ??
+          `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
         style: STATUS_STYLE,
       },
       {
@@ -191,6 +194,7 @@ function getSessionCost(ctx: ExtensionContext): number {
 
 export default function (pi: ExtensionAPI) {
   let editor: PromptEditor | undefined;
+  let getPresetName: () => string | undefined = () => undefined;
 
   const updateStatus = (ctx: ExtensionContext) => {
     editor?.setStatus(
@@ -207,11 +211,17 @@ export default function (pi: ExtensionAPI) {
       editor = new PromptEditor(tui, theme, keybindings);
       editor.setPaddingX(1);
       editor.getCost = () => getSessionCost(ctx);
+      editor.getPresetName = () => getPresetName();
       updateStatus(ctx);
       return editor;
     });
 
-    ctx.ui.setFooter(() => ({ render: () => [], invalidate() {} }));
+    ctx.ui.setFooter((_tui, _theme, footerData) => {
+      // Read live statuses: setStatus() already requests a render, including when
+      // presets change after the model/thinking-level events have fired.
+      getPresetName = () => footerData.getExtensionStatuses().get("presets:name");
+      return { render: () => [], invalidate() {} };
+    });
   });
 
   pi.on("model_select", (_event, ctx) => updateStatus(ctx));
