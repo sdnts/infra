@@ -13,9 +13,6 @@ set -gx HOMEBREW_NO_AUTO_UPDATE 1
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx ZIG_BUILD_ERROR_STYLE minimal_clear
 
-fish_add_path /run/wrappers/bin
-fish_add_path /run/current-system/sw/bin
-fish_add_path /etc/profiles/per-user/$USER/bin
 fish_add_path /opt/homebrew/bin
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.radicle/bin
