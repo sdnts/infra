@@ -2,7 +2,10 @@
 {
   system.stateVersion = "26.05";
 
-  networking.hostId = "47488af9";
+  networking = {
+    hostName = "sentry";
+    hostId = "47488af9";
+  };
   time.timeZone = "Europe/Berlin";
 
   home-manager.users.sdnts.home = {
