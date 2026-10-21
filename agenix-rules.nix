@@ -19,4 +19,11 @@ in
     hq.ssh.users.sdnts.publicKey
     sentry.ssh.host.publicKey
   ];
+  "secrets/netrc.age".publicKeys = with identity; [
+    hq.ssh.users.sdnts.publicKey
+    hq.ssh.host.publicKey
+    bastion.ssh.host.publicKey
+    vault.ssh.host.publicKey
+    sentry.ssh.host.publicKey
+  ];
 }

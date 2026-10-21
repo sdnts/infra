@@ -21,20 +21,26 @@ in
     inputs.disko.nixosModules.default
     inputs.home-manager.nixosModules.default
     inputs.nixos-facter-modules.nixosModules.facter
+    inputs.rex.nixosModules.default
   ];
 
   nixpkgs.overlays = [ inputs.copyparty.overlays.default ];
 
+  age.secrets = {
+    netrc.file = ../secrets/netrc.age;
+  };
+
   nix = {
-    optimise.automatic = lib.mkDefault true;
     settings = {
-      download-buffer-size = lib.mkDefault 536870912;
       experimental-features = [
         "nix-command"
         "flakes"
       ];
+      netrc-file = lib.mkDefault config.age.secrets.netrc.path;
+      download-buffer-size = lib.mkDefault 536870912;
       warn-dirty = lib.mkDefault false;
     };
+    optimise.automatic = lib.mkDefault true;
     gc = {
       options = lib.mkDefault "--delete-older-than 14d";
       automatic = lib.mkDefault true;
@@ -65,7 +71,10 @@ in
   users.users.sdnts = {
     shell = lib.mkForce pkgs.fish;
     isNormalUser = lib.mkForce true;
-    extraGroups = lib.mkForce [ "wheel" ];
+    extraGroups = lib.mkForce [
+      "wheel"
+      "rex"
+    ];
     openssh.authorizedKeys.keys = lib.mkForce [
       identity.hq.ssh.users.sdnts.publicKey
     ];
@@ -88,6 +97,14 @@ in
     journald.settings.Journal = {
       SystemMaxUse = lib.mkDefault "500M";
       MaxRetentionSec = lib.mkDefault "7day";
+    };
+    rex = {
+      enable = lib.mkForce true;
+      user = lib.mkForce "sdnts";
+      tailscaleServe = {
+        enable = lib.mkForce true;
+        httpsPort = lib.mkForce 7297;
+      };
     };
     tailscale.enable = lib.mkForce true;
     prometheus.exporters.node.enable = lib.mkForce true;

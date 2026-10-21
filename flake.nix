@@ -50,23 +50,24 @@
     # The size and centralization of the nixpkgs repo makes this option attractive.
     agenix.url = "github:ryantm/agenix";
     copyparty.url = "github:9001/copyparty";
+    darwin = {
+      # This input is a little more special. In addition to the `url`, it also says that this flake should not bring in
+      # its own version of `nixpkgs`, but should instead use the version from the `nixpkgs` input in OUR flake. This can
+      # be a little unstable at times because `nix-darwin` was likely tested against a specific version of nixpkgs that
+      # does not match our version, but in practice it is mostly fine.
+      # Doing this helps with performance because Nix doesn't have to build multiple versions of common packages.
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     deploy.url = "github:serokell/deploy-rs";
     disko.url = "github:nix-community/disko";
     home-manager = {
       url = "github:nix-community/home-manager";
-      # This input is a little more special. In addition to the `url`, it also says that this flake should not bring in
-      # its own version of `nixpkgs`, but should instead use the version from the `nixpkgs` input in OUR flake. This can
-      # be a little unstable at times because `home-manager` was likely tested against a specific version of nixpkgs
-      # that does not match our version, but in practice it is mostly fine.
-      # Doing this helps with performance because Nix doesn't have to build multiple versions of common packages.
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    darwin = {
-      url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     pi.url = "github:earendil-works/pi/stable";
+    rex.url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
   };
 
   # `outputs` declare what this flake builds. It is a Nix function that gets all inputs as arguments, and it is expected

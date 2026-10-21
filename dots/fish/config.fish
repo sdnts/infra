@@ -18,6 +18,7 @@ fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.radicle/bin
 fish_add_path $HOME/.zig
 fish_add_path $HOME/Library/pnpm/bin
+fish_add_path /Applications/Rex\ Beta.app/Contents/Helpers/Rex\ Server.rex/Contents/MacOS
 
 abbr -a ls eza
 abbr -a p posting --collection .
