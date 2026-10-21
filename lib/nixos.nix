@@ -71,7 +71,7 @@ in
     ];
   };
 
-  # `home.nix` already installs a bunch of packages, so list packages here that are nixos.
+  # `home.nix` already installs a bunch of packages, so list packages here that are nixos-specific.
   home-manager.users.sdnts.home.packages = [
 
   ]

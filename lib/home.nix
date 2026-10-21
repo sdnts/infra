@@ -67,7 +67,6 @@ in
         pkgs.typescript
         pkgs.vscode-langservers-extracted
         pkgs.yaml-language-server
-        pkgs.zls
         # Formatters
         pkgs.nixfmt
         pkgs.nufmt
