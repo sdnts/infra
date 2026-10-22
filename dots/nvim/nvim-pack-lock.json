@@ -29,7 +29,7 @@
       "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
     },
     "mini.nvim": {
-      "rev": "4d84086ab334a88201b803d11d1086406fe7e43d",
+      "rev": "a6e23131010b800ecbab85fa6adc0ff38eae2c2d",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "neo-tree.nvim": {
@@ -71,7 +71,7 @@
       "version": "'stable'"
     },
     "schemastore.nvim": {
-      "rev": "2af1680d9c054f10ce9ebc1f28443178c2b5fcbf",
+      "rev": "98c0d97389a1d46d7ee442161e05e4175d3763ec",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
     "snacks.nvim": {
