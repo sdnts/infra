@@ -26,6 +26,7 @@ const RESET = "\x1b[0m";
 
 class PromptEditor extends CustomEditor {
   private modelName = "";
+  private presetName: string | undefined | null = null;
   private thinkingLevel: string | undefined;
   private directory = "";
   private modelShineStartedAt: number | undefined;
@@ -49,6 +50,14 @@ class PromptEditor extends CustomEditor {
       this.thinkingShineStartedAt =
         thinkingLevel === "xhigh" || thinkingLevel === "max" ? now : undefined;
     }
+    this.startShineTimer();
+    this.modelName = modelName;
+    this.thinkingLevel = thinkingLevel;
+    this.directory = directory;
+    this.tui.requestRender();
+  }
+
+  private startShineTimer(): void {
     if (this.modelShineStartedAt !== undefined || this.thinkingShineStartedAt !== undefined) {
       this.shineTimer ??= setInterval(() => {
         const now = Date.now();
@@ -70,10 +79,6 @@ class PromptEditor extends CustomEditor {
         this.tui.requestRender();
       }, SHINE_FRAME_MS);
     }
-    this.modelName = modelName;
-    this.thinkingLevel = thinkingLevel;
-    this.directory = directory;
-    this.tui.requestRender();
   }
 
   stopShine(): void {
@@ -119,12 +124,22 @@ class PromptEditor extends CustomEditor {
   }
 
   override render(width: number): string[] {
+    // Preset statuses arrive after model/thinking events, so detect changes from
+    // the live label. Reuse the model shine even when the model stays the same.
+    const presetName = this.getPresetName();
+    if (this.presetName !== null && presetName !== undefined && presetName !== this.presetName) {
+      this.modelShineStartedAt = Date.now();
+      this.startShineTimer();
+    }
+    this.presetName = presetName;
+
     const labelWidth = Math.max(0, Math.floor(width / 2) - 3);
     const labels = [
       {
         text:
-          this.getPresetName() ??
-          `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
+          presetName !== undefined
+            ? this.renderShine(presetName, THINKING_COLORS.default, this.modelShineStartedAt)
+            : `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
         style: STATUS_STYLE,
       },
       {
