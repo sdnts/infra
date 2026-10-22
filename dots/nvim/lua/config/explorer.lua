@@ -71,4 +71,22 @@ require("neo-tree").setup({
 })
 require("window-picker").setup({ hint = "floating-big-letter" })
 
-vim.keymap.set("n", "<D-e>", function() vim.cmd("Neotree toggle reveal_force_cwd") end, { desc = "Open Neotree" })
+vim.keymap.set("n", "<D-e>", function()
+	local execute = require("neo-tree.command").execute
+	if vim.bo.filetype == "ministarter" then
+		execute({
+			action = "focus",
+			toggle = true,
+			source = "filesystem",
+			dir = vim.fn.getcwd(),
+			reveal = false,
+		})
+	else
+		execute({
+			action = "focus",
+			toggle = true,
+			source = "filesystem",
+			reveal_force_cwd = true,
+		})
+	end
+end, { desc = "Open Neotree" })
