@@ -14,6 +14,7 @@ sign-on-push = true
 
 [ui]
 default-command = "log"
+editor = ["nvim", "+/^$"]
 
 [revsets]
 bookmark-advance-to = 'closest_pushable(@)'
