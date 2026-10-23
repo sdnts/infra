@@ -36,12 +36,9 @@ function fish_prompt
     set -l v_upper_pipe $c_pipes '╭╴ ' $c_normal
     set -l v_lower_pipe $c_pipes '╰╴ ' $c_normal
 
-    # Show the hostname on remote connections (ssh/mosh)
     set -l c_hostname (set_color -o B2B2B2)
     set -l v_hostname
-    if test -n "$SSH_CONNECTION"
-        set v_hostname $c_hostname '[' (prompt_hostname) '] ' $c_normal
-    end
+    set v_hostname $c_hostname '[' (prompt_hostname) '] ' $c_normal
 
     # Since we display the prompt on a new line allow the directory names to be longer.
     set -q fish_prompt_pwd_dir_length
