@@ -49,7 +49,6 @@ in
         pkgs.hexyl
         pkgs.git
         pkgs.jujutsu
-        pkgs.mosh
         pkgs.nodejs
         pkgs.nushell
         pkgs.zoxide

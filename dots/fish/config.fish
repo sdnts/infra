@@ -24,7 +24,6 @@ fish_add_path /Applications/Rex\ Beta.app/Contents/Helpers/Rex\ Server.rex/Conte
 abbr -a ls eza
 abbr -a p posting --collection .
 abbr -a ngc nix-collect-garbage -d
-abbr -a ssh mosh
 abbr -a v nvim
 abbr -a x exit
 

@@ -50,7 +50,6 @@ in
 
   boot.tmp.cleanOnBoot = lib.mkDefault true;
   programs.fish.enable = lib.mkForce true;
-  programs.mosh.enable = lib.mkDefault true;
   virtualisation.oci-containers.backend = lib.mkDefault "docker";
 
   networking = {
