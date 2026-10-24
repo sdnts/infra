@@ -7,6 +7,7 @@ const presets = [
   { name: "architect", provider: "openai", model: "gpt-6-astra", thinkingLevel: "xhigh" },
 ] as const;
 type Preset = (typeof presets)[number];
+type PresetName = Preset["name"];
 
 export default function (pi: ExtensionAPI) {
   async function apply(preset: Preset, ctx: ExtensionContext) {
@@ -19,7 +20,7 @@ export default function (pi: ExtensionAPI) {
 
     // Also append a custom entry to the current session. This will be used to restore this preset if this session is
     // killed an resumed later.
-    pi.appendEntry("presets:set", preset);
+    pi.appendEntry("presets:name", preset.name);
 
     // Set a custom status key so the `prompt` extension can use it to render the preset name instead of model +
     // thinking level (mostly for aesthetics).
@@ -56,7 +57,7 @@ export default function (pi: ExtensionAPI) {
 
       // Activate the previous preset, cycling back to the last if we're at the first.
       if (current === -1) apply(presets[presets.length - 1], ctx);
-      apply(presets[(current - 1 + presets.length) % presets.length], ctx);
+      return apply(presets[(current - 1 + presets.length) % presets.length], ctx);
     },
   });
 
@@ -66,12 +67,15 @@ export default function (pi: ExtensionAPI) {
     if (e.reason === "new") return apply(presets[0], ctx);
 
     // If this session is being restored, activate the last preset that was active before it was killed
-    const preset = ctx.sessionManager
+    const presetEntry = ctx.sessionManager
       .getEntries()
-      .filter((e) => e.type === "custom" && e.customType === "presets:set")
+      .filter(
+        (e): e is CustomEntry<PresetName> => e.type === "custom" && e.customType === "presets:name",
+      )
       .at(-1);
+    const preset = presets.find((p) => p.name === presetEntry?.data);
 
-    if (preset) apply((preset as CustomEntry).data as Preset, ctx);
+    if (preset) return apply(preset, ctx);
   });
 
   // When models change outside of the presets, reset the custom status key we set in `apply` so the `prompt` extension
@@ -88,6 +92,7 @@ export default function (pi: ExtensionAPI) {
     );
     if (preset) return;
 
+    pi.appendEntry("presets:name", undefined);
     ctx.ui.setStatus("presets:name", undefined);
   });
 
@@ -105,6 +110,7 @@ export default function (pi: ExtensionAPI) {
     );
     if (preset) return;
 
+    pi.appendEntry("presets:name", undefined);
     ctx.ui.setStatus("presets:name", undefined);
   });
 }
