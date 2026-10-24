@@ -9,7 +9,7 @@
   };
 
   homebrew = {
-    brews = [ ];
+    brews = [ "ampcode/tap/ampcode" ];
     casks = [ ];
   };
 
