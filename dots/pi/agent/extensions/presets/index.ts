@@ -4,7 +4,7 @@ import type { CustomEntry, ExtensionAPI, ExtensionContext } from "@earendil-work
 const presets = [
   { name: "instant", provider: "openai", model: "gpt-6-sol", thinkingLevel: "low" },
   { name: "engineer", provider: "openai", model: "gpt-6.1-sol", thinkingLevel: "medium" },
-  { name: "architect", provider: "openai", model: "gpt-6-astra", thinkingLevel: "medium" },
+  { name: "architect", provider: "openai", model: "gpt-6-astra", thinkingLevel: "xhigh" },
 ] as const;
 type Preset = (typeof presets)[number];
 
