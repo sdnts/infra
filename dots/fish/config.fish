@@ -38,7 +38,9 @@ function fish_prompt
 
     set -l c_hostname (set_color -o B2B2B2)
     set -l v_hostname
-    set v_hostname $c_hostname '[' (prompt_hostname) '] ' $c_normal
+    if not string match -q 'unix://*' "$REX_SERVER"
+        set v_hostname $c_hostname '[' (prompt_hostname) '] ' $c_normal
+    end
 
     # Since we display the prompt on a new line allow the directory names to be longer.
     set -q fish_prompt_pwd_dir_length
