@@ -74,7 +74,7 @@ in
 
     ]
     ++ lib.optionals isServer [ ]
-    ++ lib.optionals isTTY [ "hunk" ]
+    ++ lib.optionals isTTY [ ]
     ++ lib.optionals isHQ [ ];
 
     casks = [
