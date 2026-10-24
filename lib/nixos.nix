@@ -100,10 +100,7 @@ in
     rex = {
       enable = lib.mkForce true;
       user = lib.mkForce "sdnts";
-      tailscaleServe = {
-        enable = lib.mkForce true;
-        httpsPort = lib.mkForce 7297;
-      };
+      tailscaleServe.enable = lib.mkForce true;
     };
     tailscale.enable = lib.mkForce true;
     prometheus.exporters.node.enable = lib.mkForce true;
