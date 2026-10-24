@@ -17,6 +17,7 @@ default-command = "log"
 editor = ["nvim", "+/^$"]
 
 [revsets]
+log = 'builtin_log() | ancestors(@, 5)'
 bookmark-advance-to = 'closest_pushable(@)'
 
 [revset-aliases]
