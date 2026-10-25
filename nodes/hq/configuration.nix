@@ -19,6 +19,7 @@
   };
 
   services = {
+    tailscale.enable = false; # We'll use the Tailscale app instead
     prometheus.exporters.node.enable = false;
   };
 }

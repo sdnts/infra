@@ -109,6 +109,7 @@
             # Disabling remoteBuild for this specific node because I use my MacBook to deploy to every other node.
             # Remote is the same as local here.
             remoteBuild = false;
+            # Required workaround for https://github.com/serokell/deploy-rs/pull/404
             magicRollback = false;
             # Profiles are a collection of packages that are symlinked from the Nix store. You can use profiles to
             # install a set of packages with specific versions all in one command. The act of doing so is called
@@ -139,19 +140,15 @@
           # Mac mini
           mainframe = {
             hostname = "mainframe";
-            sshUser = "sdnts";
+            sshUser = "root";
             magicRollback = false;
-            profiles.system = {
-              user = "root";
-              interactiveSudo = true;
-              path = deploy.lib.aarch64-darwin.activate.darwin (
-                darwin.lib.darwinSystem {
-                  system = "aarch64-darwin";
-                  modules = [ ./nodes/mainframe ];
-                  specialArgs = { inherit inputs; };
-                }
-              );
-            };
+            profiles.system.path = deploy.lib.aarch64-darwin.activate.darwin (
+              darwin.lib.darwinSystem {
+                system = "aarch64-darwin";
+                modules = [ ./nodes/mainframe ];
+                specialArgs = { inherit inputs; };
+              }
+            );
           };
 
           # VPS (Mythic Beasts)

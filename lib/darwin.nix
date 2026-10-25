@@ -103,6 +103,7 @@ in
         PermitRootLogin prohibit-password
       '';
     };
+    tailscale.enable = lib.mkDefault true;
     prometheus.exporters.node.enable = lib.mkDefault true;
   };
 }
