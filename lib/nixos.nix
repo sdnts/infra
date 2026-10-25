@@ -61,22 +61,11 @@ in
     firewall.trustedInterfaces = [ "docker0" ];
   };
 
-  users.users.root = {
-    shell = lib.mkForce pkgs.fish;
-    openssh.authorizedKeys.keys = lib.mkForce [
-      identity.hq.ssh.users.sdnts.publicKey
-    ];
-  };
   users.users.sdnts = {
     shell = lib.mkForce pkgs.fish;
     isNormalUser = lib.mkForce true;
-    extraGroups = lib.mkForce [
-      "wheel"
-      "rex"
-    ];
-    openssh.authorizedKeys.keys = lib.mkForce [
-      identity.hq.ssh.users.sdnts.publicKey
-    ];
+    extraGroups = lib.mkForce [ "wheel" ];
+    # SSH is controlled by Tailscale policies, so no `authorizedKeys` here!
   };
 
   # `home.nix` already installs a bunch of packages, so list packages here that are nixos-specific.
@@ -88,6 +77,7 @@ in
   ++ lib.optionals isHQ [ ];
 
   services = {
+    # SSH access is controlled by Tailscale, but age requires sshd running
     openssh = {
       enable = lib.mkForce true;
       settings.PasswordAuthentication = lib.mkForce false;
@@ -101,6 +91,7 @@ in
       enable = lib.mkForce true;
       user = lib.mkForce "sdnts";
       tailscaleServe.enable = lib.mkForce true;
+      tailnetAllowIdentified = lib.mkForce true;
     };
     tailscale.enable = lib.mkForce true;
     prometheus.exporters.node.enable = lib.mkForce true;
