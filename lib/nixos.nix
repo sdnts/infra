@@ -36,6 +36,7 @@ in
         "nix-command"
         "flakes"
       ];
+      # Rex's Linux server requires a secret that's supplied via /etc/netrc
       netrc-file = lib.mkDefault config.age.secrets.netrc.path;
       download-buffer-size = lib.mkDefault 536870912;
       warn-dirty = lib.mkDefault false;

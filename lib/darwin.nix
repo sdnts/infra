@@ -21,12 +21,6 @@ in
   ];
 
   age.secrets = {
-    netrc = {
-      file = ../secrets/netrc.age;
-      # Credentials in the netrc file are going to be used when deploying to nodes. This happens as my user, which is
-      # why this file must belong to me.
-      owner = "sdnts";
-    };
   };
 
   nix = {
@@ -35,7 +29,6 @@ in
         "nix-command"
         "flakes"
       ];
-      netrc-file = lib.mkDefault config.age.secrets.netrc.path;
       download-buffer-size = lib.mkDefault 536870912;
       warn-dirty = lib.mkDefault false;
     };

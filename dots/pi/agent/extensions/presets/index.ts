@@ -2,9 +2,9 @@ import type { CustomEntry, ExtensionAPI, ExtensionContext } from "@earendil-work
 
 // A preset is a curated bundle of a model & a thinking level
 const presets = [
-  { name: "instant", provider: "openai", model: "gpt-6-sol", thinkingLevel: "low" },
-  { name: "engineer", provider: "openai", model: "gpt-6.1-sol", thinkingLevel: "medium" },
-  { name: "architect", provider: "openai", model: "gpt-6-astra", thinkingLevel: "xhigh" },
+  { name: "instant", provider: "openai", model: "gpt-6.1-terra", thinkingLevel: "medium" },
+  { name: "medium", provider: "openai", model: "gpt-6.1-sol", thinkingLevel: "high" },
+  { name: "high", provider: "openai", model: "gpt-6-astra", thinkingLevel: "xhigh" },
 ] as const;
 type Preset = (typeof presets)[number];
 type PresetName = Preset["name"];
