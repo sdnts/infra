@@ -26,41 +26,32 @@ rex.bind("alt+9", "client.tab.goto", { index = 9 })
 rex.bind("alt+-", "pane.split", { direction = "down" })
 rex.bind("alt+\\", "pane.split", { direction = "right" })
 
-rex.bind("alt+up", "pane.focus", { direction = "up" })
-rex.bind("alt+down", "pane.focus", { direction = "down" })
-rex.bind("alt+left", "pane.focus", { direction = "left" })
-rex.bind("alt+right", "pane.focus", { direction = "right" })
-
-rex.bind("alt+shift+up", "pane.resize", { direction = "up", amount = 2 })
-rex.bind("alt+shift+down", "pane.resize", { direction = "down", amount = 2 })
-rex.bind("alt+shift+left", "pane.resize", { direction = "left", amount = 2 })
-rex.bind("alt+shift+right", "pane.resize", { direction = "right", amount = 2 })
-
+rex.bind("alt+f", "pane.float")
 rex.bind("alt+z", "pane.zoom")
 rex.bind("alt+=", "pane.balance")
 
+rex.bind("alt+up", "pane.focus", { direction = "up", wrap = false })
+rex.bind("alt+down", "pane.focus", { direction = "down", wrap = false })
+rex.bind("alt+left", "pane.focus", { direction = "left", wrap = false })
+rex.bind("alt+right", "pane.focus", { direction = "right", wrap = false })
+
+rex.bind("alt+shift+up", "pane.move.up")
+rex.bind("alt+shift+down", "pane.move.down")
+rex.bind("alt+shift+left", "pane.move.left")
+rex.bind("alt+shift+right", "pane.move.right")
+
+-- rex.bind("alt+", "client.mode.enter", { name = "resize", once = true })
+-- rex.bind("resize/up", "pane.resize", { direction = "up", amount = 2 })
+-- rex.bind("resize/down", "pane.resize", { direction = "down", amount = 2 })
+-- rex.bind("resize/left", "pane.resize", { direction = "left", amount = 2 })
+-- rex.bind("resize/right", "pane.resize", { direction = "right", amount = 2 })
+
 -- Neovim-specific
-rex.unbind("cmd+t")
-rex.unbind("cmd+n")
-
-rex.unbind("cmd+w")
-
-rex.unbind("cmd+up")
-rex.unbind("cmd+down")
-rex.unbind("cmd+left")
-rex.unbind("cmd+right")
-
-rex.unbind("cmd+\\")
-rex.unbind("cmd+-")
-
-rex.unbind("cmd+z")
-
-rex.unbind("cmd+e")
-rex.unbind("cmd+shift+f")
-rex.unbind("cmd+s")
-rex.unbind("cmd+shift+s")
-
-rex.unbind("cmd+p")
-rex.unbind("cmd+.")
-rex.unbind("cmd+enter")
-rex.unbind("cmd+shift+enter")
+rex.unbind("cmd+w") -- Overridden to close neovim tabs instead of Rex tabs
+rex.unbind("cmd+up") -- Overridden to navigate Neovim panes instead of Rex capturing it
+rex.unbind("cmd+down") -- Overridden to navigate Neovim panes instead of Rex capturing it
+rex.unbind("cmd+left") -- Overridden to navigate Neovim panes instead of Rex capturing it
+rex.unbind("cmd+right") -- Overridden to navigate Neovim panes instead of Rex capturing it
+rex.unbind("cmd+-") -- Overriden to create Neovim splits instead of zooming out
+rex.unbind("cmd+z") -- Overridden to zoon Neovim panes instead of Rex undo
+rex.unbind("cmd+enter") -- Overriden to accept Neovim AI suggestions instead of creating new Rex panes
