@@ -45,8 +45,6 @@ cmp.setup({
 -- Keymap --
 ------------
 
-vim.keymap.set("n", "<Leader>wz", function() require("mini.misc").zoom() end, { desc = "Focus pane" })
-
 vim.keymap.set("n", "<Leader>pd", function() Snacks.picker.diagnostics() end, { desc = "Project diagnostics" })
 
 vim.keymap.set("n", "<Leader>bd", function() Snacks.picker.diagnostics_buffer() end, { desc = "Buffer diagnostics" })

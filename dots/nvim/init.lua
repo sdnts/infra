@@ -75,6 +75,7 @@ vim.keymap.set("n", "<D-Left>", "<C-w><Left>", { desc = "Switch to pane to the l
 vim.keymap.set("n", "<D-Right>", "<C-w><Right>", { desc = "Switch to pane to the right" })
 vim.keymap.set("n", "<D-w>", ":close<CR>", { desc = "Close current pane" })
 vim.keymap.set("n", "<Leader>w=", "<C-w>=", { desc = "Balance panes (make them equally high and wide)" })
+vim.keymap.set("n", "<Leader>wz", function() require("mini.misc").zoom() end, { desc = "Focus pane" })
 
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
