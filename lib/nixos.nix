@@ -88,11 +88,10 @@ in
       SystemMaxUse = lib.mkDefault "500M";
       MaxRetentionSec = lib.mkDefault "7day";
     };
-    rex = {
-      enable = lib.mkForce true;
-      user = lib.mkForce "sdnts";
-      tailscaleServe.enable = lib.mkForce true;
-      tailnetAllowIdentified = lib.mkForce true;
+    rex.loginServer = {
+      enable = true;
+      tailscaleServe.enable = true;
+      accounts.sdnts.principals = [ "tailscale:sdnts@github" ];
     };
     tailscale.enable = lib.mkForce true;
     prometheus.exporters.node.enable = lib.mkForce true;
