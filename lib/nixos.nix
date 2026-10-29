@@ -26,8 +26,12 @@ in
 
   nixpkgs.overlays = [ inputs.copyparty.overlays.default ];
 
-  age.secrets = {
-    netrc.file = ../secrets/netrc.age;
+  age = {
+    # Ask age to use the host's SSH key as its identity. This is used when decrypting secrets after profile deployment
+    identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    secrets = {
+      netrc.file = ../secrets/netrc.age;
+    };
   };
 
   nix = {

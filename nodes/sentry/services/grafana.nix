@@ -1,10 +1,8 @@
 { config, ... }:
 {
-  age.secrets = {
-    grafana = {
-      file = ../../../secrets/grafana.age;
-      owner = "grafana";
-    };
+  age.secrets.grafana = {
+    file = ../../../secrets/grafana.age;
+    owner = "grafana";
   };
 
   services.grafana = {

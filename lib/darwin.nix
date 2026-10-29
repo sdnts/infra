@@ -20,7 +20,10 @@ in
     inputs.home-manager.darwinModules.default
   ];
 
-  age.secrets = {
+  age = {
+    # Ask age to use the host's SSH key as its identity. This is used when decrypting secrets after profile deployment
+    identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    secrets = { };
   };
 
   nix = {

@@ -1,9 +1,7 @@
 { config, ... }:
 
 {
-  age.secrets = {
-    nginx.file = ../../../secrets/nginx.age;
-  };
+  age.secrets.nginx.file = ../../../secrets/nginx.age;
 
   services.prometheus.exporters.nginx = {
     enable = true;
