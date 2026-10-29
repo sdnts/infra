@@ -92,7 +92,13 @@ in
       tailscaleServe.enable = true;
       accounts.sdnts.principals = [ "tailscale:sdnts@github" ];
     };
-    tailscale.enable = lib.mkForce true;
+
+    tailscale = {
+      enable = lib.mkForce true;
+      extraSetFlags = [ "--ssh" ];
+      extraUpFlags = [ "--advertise-tags=tag:rex" ];
+    };
+
     prometheus.exporters.node.enable = lib.mkForce true;
   };
 }
