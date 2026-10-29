@@ -7,6 +7,7 @@
     globalConfig = {
       scrape_interval = "1m";
     };
+
     scrapeConfigs = [
       {
         job_name = "node";
@@ -27,17 +28,17 @@
 
       {
         job_name = "prometheus";
-        static_configs = [ { targets = [ "prometheus.lab.sdnts.dev" ]; } ];
+        static_configs = [ { targets = [ "sentry:9090" ]; } ];
       }
 
       {
         job_name = "grafana";
-        static_configs = [ { targets = [ "grafana.lab.sdnts.dev" ]; } ];
+        static_configs = [ { targets = [ "sentry:3000" ]; } ];
       }
 
       {
         job_name = "jellyfin";
-        static_configs = [ { targets = [ "jellyfin.lab.sdnts.dev" ]; } ];
+        static_configs = [ { targets = [ "vault:8096" ]; } ];
       }
     ];
   };
