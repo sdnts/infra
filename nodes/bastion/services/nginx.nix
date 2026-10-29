@@ -44,6 +44,10 @@
           proxy_set_header Origin https://grafana.lab.sdnts.dev;
         '';
       };
+
+      # Disable routing to the metrics endpoint. Prometheus will reach out to the host directly (bypassing nginx). This
+      # prevents metrics from being accidentally exposed publicly.
+      locations."= /metrics".return = "404";
     };
 
     virtualHosts."restic.lab.sdnts.dev" = {
@@ -57,6 +61,7 @@
       };
     };
 
+    # Copyparty
     virtualHosts."bastion.lab.sdnts.dev" = {
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
@@ -86,6 +91,10 @@
       locations."/" = {
         proxyPass = "http://vault:8096";
       };
+
+      # Disable routing to the metrics endpoint. Prometheus will reach out to the host directly (bypassing nginx). This
+      # prevents metrics from being accidentally exposed publicly.
+      locations."= /metrics".return = "404";
     };
 
     virtualHosts."recipes.lab.sdnts.dev" = {

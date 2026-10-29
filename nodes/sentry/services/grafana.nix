@@ -16,6 +16,7 @@
         enable_gzip = true;
       };
       security.secret_key = "$__file{${config.age.secrets.grafana.path}}";
+      metrics.enabled = true;
       analytics.reporting_enabled = false;
     };
   };
