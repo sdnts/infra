@@ -8,8 +8,6 @@
   ...
 }:
 let
-  identity = import ../identity.nix;
-
   isServer = builtins.elem "server" config.infra.roles;
   isTTY = builtins.elem "tty" config.infra.roles;
   isHQ = builtins.elem "hq" config.infra.roles;
@@ -82,12 +80,9 @@ in
   ++ lib.optionals isHQ [ ];
 
   services = {
-    # SSH access is controlled by Tailscale, but age requires sshd running
-    openssh = {
-      enable = lib.mkForce true;
-      settings.PasswordAuthentication = lib.mkForce false;
-      settings.PermitRootLogin = lib.mkForce "prohibit-password";
-    };
+    # SSH access is controlled by Tailscale
+    openssh.enable = lib.mkForce false;
+
     journald.settings.Journal = {
       SystemMaxUse = lib.mkDefault "500M";
       MaxRetentionSec = lib.mkDefault "7day";

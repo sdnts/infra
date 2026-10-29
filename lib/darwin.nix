@@ -8,8 +8,6 @@
   ...
 }:
 let
-  identity = import ../identity.nix;
-
   isServer = builtins.elem "server" config.infra.roles;
   isTTY = builtins.elem "tty" config.infra.roles;
   isHQ = builtins.elem "hq" config.infra.roles;
@@ -52,15 +50,10 @@ in
   programs.fish.enable = lib.mkForce true;
 
   system.primaryUser = lib.mkForce "sdnts";
-  users.users.root.openssh.authorizedKeys.keys = lib.mkForce [
-    identity.hq.ssh.users.sdnts.publicKey
-  ];
   users.users.sdnts = {
     home = lib.mkForce "/Users/sdnts";
     shell = lib.mkForce pkgs.fish;
-    openssh.authorizedKeys.keys = lib.mkForce [
-      identity.hq.ssh.users.sdnts.publicKey
-    ];
+    # SSH is controlled by Tailscale policies, so no `authorizedKeys` here!
   };
 
   homebrew = {
@@ -90,16 +83,11 @@ in
   ++ lib.optionals isHQ [ ];
 
   services = {
-    openssh = {
-      enable = lib.mkForce true;
-      extraConfig = lib.mkForce ''
-        PubkeyAuthentication yes
-        PasswordAuthentication no
-        KbdInteractiveAuthentication no
-        PermitRootLogin prohibit-password
-      '';
-    };
     tailscale.enable = lib.mkDefault true;
+
+    # SSH access is controlled by Tailscale, so we do not need the OpenSSH daemon
+    openssh.enable = lib.mkDefault false;
+
     prometheus.exporters.node.enable = lib.mkDefault true;
   };
 }
