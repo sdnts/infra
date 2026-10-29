@@ -67,7 +67,7 @@
     };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     pi.url = "github:earendil-works/pi/stable";
-    rex.url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
+    rex.url = "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz";
   };
 
   # `outputs` declare what this flake builds. It is a Nix function that gets all inputs as arguments, and it is expected
