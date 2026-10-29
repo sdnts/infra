@@ -5,7 +5,10 @@
     nginx.file = ../../../secrets/nginx.age;
   };
 
-  services.prometheus.exporters.nginx.enable = true;
+  services.prometheus.exporters.nginx = {
+    enable = true;
+    port = 9113;
+  };
 
   services.nginx = {
     enable = true;
