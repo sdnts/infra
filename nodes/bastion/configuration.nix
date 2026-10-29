@@ -10,4 +10,8 @@
     stateVersion = "26.05";
     packages = [ ];
   };
+
+  services.tailscale.extraUpFlags = [
+    "--advertise-tags=tag:ingress"
+  ];
 }
