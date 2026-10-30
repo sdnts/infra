@@ -1,7 +1,8 @@
 -- Sessions
-rex.bind("ctrl+0", "session.switch")
-rex.bind("ctrl+n", "session.new")
-rex.bind("ctrl+r", "session.rename")
+rex.bind("alt+s", "client.mode.enter", { name = "session", once = true })
+rex.bind("session/alt+s", "session.switch")
+rex.bind("session/alt+n", "session.new")
+rex.bind("session/alt+r", "session.rename")
 
 -- Tabs
 rex.bind("alt+t", "client.tab.new")
@@ -10,6 +11,7 @@ rex.bind("alt+r", "client.tab.rename")
 rex.bind("alt+]", "client.tab.next")
 rex.bind("alt+[", "client.tab.previous")
 
+rex.bind("alt+0", "client.palette.toggle")
 rex.bind("alt+1", "client.tab.goto", { index = 1 })
 rex.bind("alt+2", "client.tab.goto", { index = 2 })
 rex.bind("alt+3", "client.tab.goto", { index = 3 })
