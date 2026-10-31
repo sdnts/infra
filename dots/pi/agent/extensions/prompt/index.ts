@@ -26,14 +26,12 @@ const RESET = "\x1b[0m";
 
 class PromptEditor extends CustomEditor {
   private modelName = "";
-  private presetName: string | undefined | null = null;
   private thinkingLevel: string | undefined;
   private directory = "";
   private modelShineStartedAt: number | undefined;
   private thinkingShineStartedAt: number | undefined;
   private shineTimer: ReturnType<typeof setInterval> | undefined;
   getCost: () => number = () => 0;
-  getPresetName: () => string | undefined = () => undefined;
 
   // Pi copies the configurable editor padding onto custom editors after creation.
   // This prompt always reserves one cell on each side of its terminal region.
@@ -47,8 +45,7 @@ class PromptEditor extends CustomEditor {
       this.modelShineStartedAt = now;
     }
     if (this.thinkingLevel !== undefined && this.thinkingLevel !== thinkingLevel) {
-      this.thinkingShineStartedAt =
-        thinkingLevel === "xhigh" || thinkingLevel === "max" ? now : undefined;
+      this.thinkingShineStartedAt = now;
     }
     this.startShineTimer();
     this.modelName = modelName;
@@ -124,22 +121,10 @@ class PromptEditor extends CustomEditor {
   }
 
   override render(width: number): string[] {
-    // Preset statuses arrive after model/thinking events, so detect changes from
-    // the live label. Reuse the model shine even when the model stays the same.
-    const presetName = this.getPresetName();
-    if (this.presetName !== null && presetName !== undefined && presetName !== this.presetName) {
-      this.modelShineStartedAt = Date.now();
-      this.startShineTimer();
-    }
-    this.presetName = presetName;
-
     const labelWidth = Math.max(0, Math.floor(width / 2) - 3);
     const labels = [
       {
-        text:
-          presetName !== undefined
-            ? this.renderShine(presetName, THINKING_COLORS.default, this.modelShineStartedAt)
-            : `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
+        text: `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
         style: STATUS_STYLE,
       },
       {
@@ -209,7 +194,6 @@ function getSessionCost(ctx: ExtensionContext): number {
 
 export default function (pi: ExtensionAPI) {
   let editor: PromptEditor | undefined;
-  let getPresetName: () => string | undefined = () => undefined;
 
   const updateStatus = (ctx: ExtensionContext) => {
     editor?.setStatus(
@@ -226,17 +210,11 @@ export default function (pi: ExtensionAPI) {
       editor = new PromptEditor(tui, theme, keybindings);
       editor.setPaddingX(1);
       editor.getCost = () => getSessionCost(ctx);
-      editor.getPresetName = () => getPresetName();
       updateStatus(ctx);
       return editor;
     });
 
-    ctx.ui.setFooter((_tui, _theme, footerData) => {
-      // Read live statuses: setStatus() already requests a render, including when
-      // presets change after the model/thinking-level events have fired.
-      getPresetName = () => footerData.getExtensionStatuses().get("presets:name");
-      return { render: () => [], invalidate() {} };
-    });
+    ctx.ui.setFooter(() => ({ render: () => [], invalidate() {} }));
   });
 
   pi.on("model_select", (_event, ctx) => updateStatus(ctx));
