@@ -1,56 +1,99 @@
+--------------------
+-- Custom Actions --
+--------------------
+
+-- Move focus within Rex panes. If `nvim` is running, move focus within Neovim instead.
+rex.action({
+	name = "process_aware_pane_focus",
+	title = "Focus Pane (Process-aware)",
+	args = {
+		type = "object",
+		properties = {
+			direction = { type = "string", enum = { "up", "down", "left", "right" } },
+		},
+	},
+	run = function(ctx, args)
+		local process, err = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
+		if not process then error(err, 0) end
+
+		if process.foreground and process.foreground.name == "nvim" then
+			rex.client.queue("pane.send_key", { key = "ctrl+w" })
+			rex.client.queue("pane.send_key", { key = args.direction })
+		else
+			rex.client.queue("pane.focus", { direction = args.direction, wrap = false })
+		end
+	end,
+})
+
+-- Split the active Rex pane. If `nvim` is running, split the Neovim pane instead.
+rex.action({
+	name = "process_aware_pane_split",
+	title = "Split Pane (Process-aware)",
+	args = {
+		type = "object",
+		properties = {
+			direction = { type = "string", enum = { "down", "right" } },
+		},
+	},
+	run = function(ctx, args)
+		local process, err = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
+		if not process then error(err, 0) end
+
+		if process.foreground and process.foreground.name == "nvim" then
+			rex.client.queue("pane.send_key", { key = "ctrl+w" })
+			rex.client.queue("pane.send_key", { key = args.direction == "right" and "v" or "s" })
+		else
+			rex.client.queue("pane.split", { direction = args.direction })
+		end
+	end,
+})
+
+-- Close the active Rex pane. If `nvim` is running, close the Neovim pane instead.
+rex.action({
+	name = "process_aware_pane_close",
+	title = "Close Pane (Process-aware)",
+	run = function(ctx)
+		local process, err = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
+		if not process then error(err, 0) end
+
+		if process.foreground and process.foreground.name == "nvim" then
+			rex.client.queue("pane.send_key", { key = "ctrl+w" })
+			rex.client.queue("pane.send_key", { key = "c" })
+		else
+			rex.client.queue("pane.close")
+		end
+	end,
+})
+
+--------------
+-- Keybinds --
+--------------
+
 -- Sessions
-rex.bind("alt+s", "client.mode.enter", { name = "session", once = true })
-rex.bind("session/alt+s", "session.switch")
-rex.bind("session/alt+n", "session.new")
-rex.bind("session/alt+r", "session.rename")
+rex.bind("cmd+s", "client.mode.enter", { name = "session", once = true })
+rex.bind("session/cmd+s", "session.switch")
+rex.bind("session/cmd+n", "session.new")
+rex.bind("session/cmd+r", "session.rename")
 
 -- Tabs
-rex.bind("alt+t", "client.tab.new")
-rex.bind("alt+r", "client.tab.rename")
+rex.bind("cmd+r", "client.tab.rename")
 
-rex.bind("alt+]", "client.tab.next")
-rex.bind("alt+[", "client.tab.previous")
+rex.bind("cmd+]", "client.tab.next")
+rex.bind("cmd+[", "client.tab.previous")
 
-rex.bind("alt+0", "client.palette.toggle")
-rex.bind("alt+1", "client.tab.goto", { index = 1 })
-rex.bind("alt+2", "client.tab.goto", { index = 2 })
-rex.bind("alt+3", "client.tab.goto", { index = 3 })
-rex.bind("alt+4", "client.tab.goto", { index = 4 })
-rex.bind("alt+5", "client.tab.goto", { index = 5 })
-rex.bind("alt+6", "client.tab.goto", { index = 6 })
-rex.bind("alt+7", "client.tab.goto", { index = 7 })
-rex.bind("alt+8", "client.tab.goto", { index = 8 })
-rex.bind("alt+9", "client.tab.goto", { index = 9 })
+-- Panes --
+rex.bind("cmd+\\", "process_aware_pane_split", { direction = "right" })
+rex.bind("cmd+-", "process_aware_pane_split", { direction = "down" })
 
--- Panes / Splits
-rex.bind("alt+-", "pane.split", { direction = "down" })
-rex.bind("alt+\\", "pane.split", { direction = "right" })
+rex.bind("cmd+up", "process_aware_pane_focus", { direction = "up" })
+rex.bind("cmd+down", "process_aware_pane_focus", { direction = "down" })
+rex.bind("cmd+left", "process_aware_pane_focus", { direction = "left" })
+rex.bind("cmd+right", "process_aware_pane_focus", { direction = "right" })
 
-rex.bind("alt+f", "pane.float")
-rex.bind("alt+z", "pane.zoom")
-rex.bind("alt+=", "pane.balance")
+rex.bind("cmd+shift+up", "pane.move.up")
+rex.bind("cmd+shift+down", "pane.move.down")
+rex.bind("cmd+shift+left", "pane.move.left")
+rex.bind("cmd+shift+right", "pane.move.right")
 
-rex.bind("alt+up", "pane.focus", { direction = "up", wrap = false })
-rex.bind("alt+down", "pane.focus", { direction = "down", wrap = false })
-rex.bind("alt+left", "pane.focus", { direction = "left", wrap = false })
-rex.bind("alt+right", "pane.focus", { direction = "right", wrap = false })
-
-rex.bind("alt+shift+up", "pane.move.up")
-rex.bind("alt+shift+down", "pane.move.down")
-rex.bind("alt+shift+left", "pane.move.left")
-rex.bind("alt+shift+right", "pane.move.right")
-
--- rex.bind("alt+", "client.mode.enter", { name = "resize", once = true })
--- rex.bind("resize/up", "pane.resize", { direction = "up", amount = 2 })
--- rex.bind("resize/down", "pane.resize", { direction = "down", amount = 2 })
--- rex.bind("resize/left", "pane.resize", { direction = "left", amount = 2 })
--- rex.bind("resize/right", "pane.resize", { direction = "right", amount = 2 })
-
--- Neovim-specific
-rex.unbind("cmd+w") -- Overridden to close neovim tabs instead of Rex tabs
-rex.unbind("cmd+up") -- Overridden to navigate Neovim panes instead of Rex capturing it
-rex.unbind("cmd+down") -- Overridden to navigate Neovim panes instead of Rex capturing it
-rex.unbind("cmd+left") -- Overridden to navigate Neovim panes instead of Rex capturing it
-rex.unbind("cmd+right") -- Overridden to navigate Neovim panes instead of Rex capturing it
-rex.unbind("cmd+-") -- Overriden to create Neovim splits instead of zooming out
-rex.unbind("cmd+enter") -- Overriden to accept Neovim AI suggestions instead of creating new Rex panes
+rex.bind("cmd+z", "pane.zoom")
+rex.bind("cmd+w", "process_aware_pane_close")

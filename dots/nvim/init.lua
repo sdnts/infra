@@ -69,10 +69,22 @@ vim.keymap.set("n", "<D-Shift-s>", ":wa<CR>", { desc = "Save all buffers" })
 -- :keymap:splits
 vim.keymap.set("n", "<D-\\>", ":vsp<CR><cmd>normal! zz<CR>", { desc = "Split pane to the right" })
 vim.keymap.set("n", "<D-->", ":sp<CR><cmd>normal! zz<CR>", { desc = "Split pane below" })
-vim.keymap.set("n", "<D-Up>", "<C-w><Up>", { desc = "Switch to pane above" })
-vim.keymap.set("n", "<D-Down>", "<C-w><Down>", { desc = "Switch to pane below" })
-vim.keymap.set("n", "<D-Left>", "<C-w><Left>", { desc = "Switch to pane to the left" })
-vim.keymap.set("n", "<D-Right>", "<C-w><Right>", { desc = "Switch to pane to the right" })
+for arrow, motion in pairs({ Up = "k", Down = "j", Left = "h", Right = "l" }) do
+	vim.keymap.set("n", "<C-w><" .. arrow .. ">", function()
+		local previous = vim.api.nvim_get_current_win()
+		vim.cmd.wincmd(motion)
+
+		if vim.api.nvim_get_current_win() == previous and vim.env.REX_SESSION then
+			vim.system({
+				"rex",
+				"focus",
+				arrow:lower(),
+				"-s",
+				vim.env.REX_SESSION,
+			})
+		end
+	end, { desc = "Focus Neovim or Rex panes" })
+end
 vim.keymap.set("n", "<D-w>", ":close<CR>", { desc = "Close current pane" })
 vim.keymap.set("n", "<Leader>w=", "<C-w>=", { desc = "Balance panes (make them equally high and wide)" })
 vim.keymap.set("n", "<Leader>wz", function() require("mini.misc").zoom() end, { desc = "Focus pane" })
