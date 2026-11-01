@@ -40,7 +40,6 @@
     # forward packets to Unix sockets yet (https://github.com/tailscale/tailscale/issues/21900), so
     # Rex shows up as its own device on the Tailscale console.
     tailscale.enable = false;
-    openssh.enable = true;
 
     prometheus.exporters.node.enable = false;
   };

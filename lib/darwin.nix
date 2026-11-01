@@ -8,6 +8,8 @@
   ...
 }:
 let
+  identity = import ../identity.nix;
+
   isServer = builtins.elem "server" config.infra.roles;
   isTTY = builtins.elem "tty" config.infra.roles;
   isHQ = builtins.elem "hq" config.infra.roles;
@@ -55,6 +57,9 @@ in
     shell = lib.mkForce pkgs.fish;
     # SSH is controlled by Tailscale policies, so no `authorizedKeys` here!
   };
+  users.users.root.openssh.authorizedKeys.keys = lib.mkForce [
+    identity.hq.ssh.users.sdnts.publicKey
+  ];
 
   homebrew = {
     enable = lib.mkDefault true;
@@ -85,8 +90,23 @@ in
   services = {
     tailscale.enable = lib.mkDefault true;
 
-    # SSH access is controlled by Tailscale, so we do not need the OpenSSH daemon
-    openssh.enable = lib.mkDefault false;
+    # I'd like to not have OpenSSH / Remote Login turned on for macOS hosts, but relying solely on Tailscale SSH is not
+    # practical yet. Apparently, nix-darwin activations tell deploy-rs to unload, load new plist, then load launchctl
+    # services (like Tailscale). Unlike NixOS, this is controlled by the deploy-rs script and not launchctl itself
+    # (AKA, unlike systemd, you cannot tell launctl to "restart" a service, you must stop and start it yourself). This
+    # means that if Tailscale is ever upgraded, deploy-rs + nix-darwin kill the SSH daemon, but cannot copy over the new
+    # plist or restart Tailscale. When this happens, we drop the SSH connection and leave the remote host stranded.
+    # It disappears from the tailnet and the new profile never gets activated.
+    # This sucks. But we can enable OpenSSH so that deploy-rs always has a way to reach remote darwin hosts.
+    openssh = {
+      enable = lib.mkForce true;
+      extraConfig = lib.mkForce ''
+        PubkeyAuthentication yes
+        PasswordAuthentication no
+        KbdInteractiveAuthentication no
+        PermitRootLogin prohibit-password
+      '';
+    };
 
     prometheus.exporters.node.enable = lib.mkDefault true;
   };
