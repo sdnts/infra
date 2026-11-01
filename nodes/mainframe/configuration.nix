@@ -5,7 +5,7 @@
   networking = {
     hostName = "mainframe";
     localHostName = "mainframe";
-    computerName = "mainframe";
+    computerName = "Mainframe";
   };
 
   power = {

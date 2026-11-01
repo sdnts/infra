@@ -17,7 +17,7 @@
   networking = {
     hostName = "hq";
     localHostName = "hq";
-    computerName = "hq";
+    computerName = "HQ";
   };
 
   homebrew = {

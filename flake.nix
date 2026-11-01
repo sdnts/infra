@@ -99,6 +99,7 @@
         # right versions of those libraries exist at the right locations. This was a real unlock for me. "Local builds"
         # are not magic!
         remoteBuild = true;
+        magicRollback = false;
         # deploy-rs calls machines "nodes". Inside the `nodes` attr set, I'm describing what I want the configuration of
         # each machine to look like
         nodes = {
@@ -112,8 +113,6 @@
             # Disabling remoteBuild for this specific node because I use my MacBook to deploy to every other node.
             # Remote is the same as local here.
             remoteBuild = false;
-            # Required workaround for https://github.com/serokell/deploy-rs/pull/404
-            magicRollback = false;
             # Profiles are a collection of packages that are symlinked from the Nix store. You can use profiles to
             # install a set of packages with specific versions all in one command. The act of doing so is called
             # "activating" a profile. In my case I only have a single profile that defines my entire system. It installs
@@ -144,7 +143,6 @@
           mainframe = {
             hostname = "mainframe";
             sshUser = "root";
-            magicRollback = false;
             profiles.system.path = deploy.lib.aarch64-darwin.activate.darwin (
               darwin.lib.darwinSystem {
                 system = "aarch64-darwin";

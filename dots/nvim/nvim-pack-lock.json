@@ -1,7 +1,7 @@
 {
   "plugins": {
     "blink.cmp": {
-      "rev": "f50d952de478b554d89bcca058691a69cb5681dd",
+      "rev": "d4318ec75309a37e09757de0f16faa67bf22b890",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
@@ -29,7 +29,7 @@
       "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
     },
     "mini.nvim": {
-      "rev": "4084a97fb06593e7f3855a9c5c63f1b87ae225e3",
+      "rev": "6d5a29e86a7352739506c28e0bc50fe214b5216f",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "neo-tree.nvim": {
@@ -42,7 +42,7 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-lspconfig": {
-      "rev": "77b7432d4770d23b277d37923e5a08a442d8bb07",
+      "rev": "d8d2fda7aae57030452ce8cd6e770b1eb704514e",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-surround": {
@@ -50,7 +50,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "a2f694478be07f89c2d03cc17858a8745a400c4b",
+      "rev": "a9c4e1457e2e59f1b82c8f78dcdb3b2517555200",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-web-devicons": {
@@ -71,7 +71,7 @@
       "version": "'stable'"
     },
     "schemastore.nvim": {
-      "rev": "0065b39e82ce104b7d90ad1b9eb3670203bf26ea",
+      "rev": "cc6302a0957806dfc0f2687f1f35ee9652686101",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
     "snacks.nvim": {
