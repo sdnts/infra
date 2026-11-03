@@ -13,7 +13,7 @@
         job_name = "node";
         static_configs = [
           { targets = [ "lovelace:9100" ]; }
-          { targets = [ "bastion:9100" ]; }
+          { targets = [ "lamport:9100" ]; }
           { targets = [ "turing:9100" ]; }
           { targets = [ "sentry:9100" ]; }
         ];
@@ -22,7 +22,7 @@
       {
         job_name = "nginx";
         static_configs = [
-          { targets = [ "bastion:9113" ]; }
+          { targets = [ "lamport:9113" ]; }
         ];
       }
 

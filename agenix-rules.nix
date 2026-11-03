@@ -7,7 +7,6 @@ in
     hq.ssh.host.publicKey
     lovelace.ssh.host.publicKey
     cloudflare.ssh.host.publicKey
-    bastion.ssh.host.publicKey
     turing.ssh.host.publicKey
     sentry.ssh.host.publicKey
     lamport.ssh.host.publicKey
@@ -15,7 +14,6 @@ in
   ];
   "secrets/nginx.age".publicKeys = with identity; [
     hq.ssh.users.sdnts.publicKey
-    bastion.ssh.host.publicKey
     lamport.ssh.host.publicKey
   ];
   "secrets/grafana.age".publicKeys = with identity; [
@@ -26,7 +24,6 @@ in
   "secrets/netrc.age".publicKeys = with identity; [
     hq.ssh.users.sdnts.publicKey
     hq.ssh.host.publicKey
-    bastion.ssh.host.publicKey
     turing.ssh.host.publicKey
     sentry.ssh.host.publicKey
     lamport.ssh.host.publicKey

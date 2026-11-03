@@ -59,26 +59,11 @@
       };
     };
 
-    # Copyparty
-    virtualHosts."bastion.lab.sdnts.dev" = {
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://bastion:3923";
-      };
-    };
     virtualHosts."turing.lab.sdnts.dev" = {
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
         proxyPass = "http://turing:3923";
-      };
-    };
-    virtualHosts."sentry.lab.sdnts.dev" = {
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://sentry:3923";
       };
     };
 
