@@ -108,12 +108,14 @@
       };
 
       darwinConfigurations = {
+        # MacBook Air
         hq = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [ ./machines/hq ];
           specialArgs = { inherit inputs; };
         };
 
+        # Mac mini
         lovelace = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [ ./machines/lovelace ];
