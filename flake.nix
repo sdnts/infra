@@ -166,13 +166,13 @@
           };
 
           # NAS (Zima Board)
-          vault = {
-            hostname = "vault";
+          turing = {
+            hostname = "turing";
             sshUser = "root";
             profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
               nixpkgs.lib.nixosSystem {
                 system = "x86_64-linux";
-                modules = [ ./machines/vault ];
+                modules = [ ./machines/turing ];
                 specialArgs = { inherit inputs; };
               }
             );

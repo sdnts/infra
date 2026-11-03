@@ -52,7 +52,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://vault:8990";
+        proxyPass = "http://turing:8990";
         extraConfig = ''
           client_max_body_size 64M;
         '';
@@ -67,11 +67,11 @@
         proxyPass = "http://bastion:3923";
       };
     };
-    virtualHosts."vault.lab.sdnts.dev" = {
+    virtualHosts."turing.lab.sdnts.dev" = {
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://vault:3923";
+        proxyPass = "http://turing:3923";
       };
     };
     virtualHosts."sentry.lab.sdnts.dev" = {
@@ -87,7 +87,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://vault:8096";
+        proxyPass = "http://turing:8096";
       };
 
       # Disable routing to the metrics endpoint. Prometheus will reach out to the host directly (bypassing nginx). This
@@ -100,7 +100,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://vault:9000";
+        proxyPass = "http://turing:9000";
       };
     };
 
@@ -109,7 +109,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://vault:2283";
+        proxyPass = "http://turing:2283";
         extraConfig = ''
           proxy_request_buffering off;
           proxy_read_timeout 600s;

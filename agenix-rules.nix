@@ -8,7 +8,7 @@ in
     lovelace.ssh.host.publicKey
     cloudflare.ssh.host.publicKey
     bastion.ssh.host.publicKey
-    vault.ssh.host.publicKey
+    turing.ssh.host.publicKey
     sentry.ssh.host.publicKey
   ];
   "secrets/nginx.age".publicKeys = with identity; [
@@ -23,7 +23,7 @@ in
     hq.ssh.users.sdnts.publicKey
     hq.ssh.host.publicKey
     bastion.ssh.host.publicKey
-    vault.ssh.host.publicKey
+    turing.ssh.host.publicKey
     sentry.ssh.host.publicKey
   ];
 }

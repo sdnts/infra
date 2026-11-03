@@ -14,7 +14,7 @@
         static_configs = [
           { targets = [ "lovelace:9100" ]; }
           { targets = [ "bastion:9100" ]; }
-          { targets = [ "vault:9100" ]; }
+          { targets = [ "turing:9100" ]; }
           { targets = [ "sentry:9100" ]; }
         ];
       }
@@ -38,7 +38,7 @@
 
       {
         job_name = "jellyfin";
-        static_configs = [ { targets = [ "vault:8096" ]; } ];
+        static_configs = [ { targets = [ "turing:8096" ]; } ];
       }
     ];
   };

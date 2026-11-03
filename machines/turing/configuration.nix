@@ -11,7 +11,7 @@
   };
 
   networking = {
-    hostName = "vault";
+    hostName = "turing";
     hostId = "280f1a04";
   };
   time.timeZone = "America/New_York";
