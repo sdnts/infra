@@ -19,7 +19,7 @@ the comments in it might be educational to fellow Nix nerds.
 
 The `deploy-rs` CLI is installed on all machines with the `hq` role. From such a node, running `deploy .` deploys all
 profiles across all machines. Use `deploy .#<name>` to deploy all profiles to a specific node only (for example:
-`deploy .#bastion`)
+`deploy .#lovelace`)
 
 ## dotfiles
 
@@ -35,8 +35,8 @@ All secrets are encrypted with [age](https://github.com/FiloSottile/age) and man
 `age` / `agenix` use SSH keys to encrypt and decrypt secrets. SSH keys for all machines is defined in an [Identities file](./identity.nix).
 These identities are set up to be copied to the right machines. They control who can encrypt and / or read secrets. In 
 general, HQ is always included, since I create secrets using HQ's SSH key. Machines that receive these secrets are also
-included so they can read the secret during deploy-rs' profile activation. For example, I run nginx in the Bastion node,
-so the `nginx.age` secret is encrypted with both HQ and Bastion's keys.
+included so they can read the secret during deploy-rs' profile activation. For example, I run nginx on the Lamport machine,
+so the `nginx.age` secret is encrypted with both HQ and Lamport's keys.
 
 ### Creating new secrets
 
@@ -46,7 +46,7 @@ The `agenix` CLI is installed on all machines with the `hq` role. As such, only 
 2. Run `agenix -e secrets/<name>.age` to open up an editor where you can set this secret's value.
 3. Define this secret in the node that wants to use it, using the `age.secrets` option in NixOS / `nix-darwin`. Ideally
    put this definition next to the service that wants to use it (for example, the `nginx.age` secret is defined in
-   [nginx's service module](./machines/bastion/services/nginx.nix))
+   [nginx's service module](./machines/lamport/services/nginx.nix))
 
 ### Updating existing secrets
 

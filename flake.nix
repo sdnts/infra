@@ -99,7 +99,28 @@
           specialArgs = { inherit inputs; };
         };
 
+        # NAS (Zima Board)
+        turing = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [ ./machines/turing ];
+          specialArgs = { inherit inputs; };
+        };
       };
+
+      darwinConfigurations = {
+        hq = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [ ./machines/hq ];
+          specialArgs = { inherit inputs; };
+        };
+
+        lovelace = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [ ./machines/lovelace ];
+          specialArgs = { inherit inputs; };
+        };
+      };
+
       # In our case, the only output is a derivation called `deploy` that the deploy-rs CLI uses to push configuration
       # to our NixOS and macOS machines over SSH. `deploy-rs` is one of many tools you can use to remotely manage and
       # deploy configuration and services to all your machines. I use it over Colmena mostly because it allows me to
@@ -143,13 +164,7 @@
               # activates a profile. I'm in turn building that profile by calling the `darwin.lib.darwinSystem` function.
               # The configuration of the system is in the `./machines/hq/default.nix` file, and `inputs` are forcefully
               # injected into the hq module.
-              path = deploy.lib.aarch64-darwin.activate.darwin (
-                darwin.lib.darwinSystem {
-                  system = "aarch64-darwin";
-                  modules = [ ./machines/hq ];
-                  specialArgs = { inherit inputs; };
-                }
-              );
+              path = deploy.lib.aarch64-darwin.activate.darwin self.darwinConfigurations.hq;
             };
           };
 
@@ -159,29 +174,9 @@
           lovelace = {
             hostname = "lovelace";
             sshUser = "root";
-            profiles.system.path = deploy.lib.aarch64-darwin.activate.darwin (
-              darwin.lib.darwinSystem {
-                system = "aarch64-darwin";
-                modules = [ ./machines/lovelace ];
-                specialArgs = { inherit inputs; };
-              }
-            );
+            profiles.system.path = deploy.lib.aarch64-darwin.activate.darwin self.darwinConfigurations.lovelace;
           };
 
-          # VPS (Mythic Beasts)
-          bastion = {
-            hostname = "bastion";
-            sshUser = "root";
-            profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
-              nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [ ./machines/bastion ];
-                specialArgs = { inherit inputs; };
-              }
-            );
-          };
-
-          # NAS (Zima Board)
           lamport = {
             hostname = "lamport";
             sshUser = "root";
@@ -193,29 +188,11 @@
             sshUser = "root";
             profiles.system.path = deploy.lib.x86_64-linux.activate.nixos self.nixosConfigurations.lee;
           };
+
           turing = {
             hostname = "turing";
             sshUser = "root";
-            profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
-              nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [ ./machines/turing ];
-                specialArgs = { inherit inputs; };
-              }
-            );
-          };
-
-          # VPS (Hetzner)
-          sentry = {
-            hostname = "sentry";
-            sshUser = "root";
-            profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
-              nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [ ./machines/sentry ];
-                specialArgs = { inherit inputs; };
-              }
-            );
+            profiles.system.path = deploy.lib.x86_64-linux.activate.nixos self.nixosConfigurations.turing;
           };
         };
       };
