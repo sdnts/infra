@@ -17,7 +17,6 @@ set -gx ZIG_BUILD_ERROR_STYLE minimal_clear
 fish_add_path /opt/homebrew/bin
 fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.radicle/bin
-fish_add_path $HOME/.zig
 fish_add_path $HOME/Library/pnpm/bin
 fish_add_path $REX_BIN_DIR
 

@@ -109,7 +109,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://homeassistant:8123";
+        proxyPass = "http://pascal:8123";
         extraConfig = ''
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
