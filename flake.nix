@@ -84,6 +84,22 @@
       ...
     }:
     {
+      nixosConfigurations = {
+        # VPS (Mythic Beasts)
+        lamport = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [ ./machines/lamport ];
+          specialArgs = { inherit inputs; };
+        };
+
+        # VPS (Mythic Beasts)
+        lee = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [ ./machines/lee ];
+          specialArgs = { inherit inputs; };
+        };
+
+      };
       # In our case, the only output is a derivation called `deploy` that the deploy-rs CLI uses to push configuration
       # to our NixOS and macOS machines over SSH. `deploy-rs` is one of many tools you can use to remotely manage and
       # deploy configuration and services to all your machines. I use it over Colmena mostly because it allows me to
@@ -166,6 +182,17 @@
           };
 
           # NAS (Zima Board)
+          lamport = {
+            hostname = "lamport";
+            sshUser = "root";
+            profiles.system.path = deploy.lib.x86_64-linux.activate.nixos self.nixosConfigurations.lamport;
+          };
+
+          lee = {
+            hostname = "lee";
+            sshUser = "root";
+            profiles.system.path = deploy.lib.x86_64-linux.activate.nixos self.nixosConfigurations.lee;
+          };
           turing = {
             hostname = "turing";
             sshUser = "root";

@@ -87,6 +87,7 @@ in
       SystemMaxUse = lib.mkDefault "500M";
       MaxRetentionSec = lib.mkDefault "7day";
     };
+
     rex.loginServer = {
       enable = true;
       tailscaleServe.enable = true;

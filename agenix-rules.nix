@@ -10,14 +10,18 @@ in
     bastion.ssh.host.publicKey
     turing.ssh.host.publicKey
     sentry.ssh.host.publicKey
+    lamport.ssh.host.publicKey
+    lee.ssh.host.publicKey
   ];
   "secrets/nginx.age".publicKeys = with identity; [
     hq.ssh.users.sdnts.publicKey
     bastion.ssh.host.publicKey
+    lamport.ssh.host.publicKey
   ];
   "secrets/grafana.age".publicKeys = with identity; [
     hq.ssh.users.sdnts.publicKey
     sentry.ssh.host.publicKey
+    lamport.ssh.host.publicKey
   ];
   "secrets/netrc.age".publicKeys = with identity; [
     hq.ssh.users.sdnts.publicKey
@@ -25,5 +29,7 @@ in
     bastion.ssh.host.publicKey
     turing.ssh.host.publicKey
     sentry.ssh.host.publicKey
+    lamport.ssh.host.publicKey
+    lee.ssh.host.publicKey
   ];
 }
