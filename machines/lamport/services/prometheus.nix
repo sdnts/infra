@@ -14,8 +14,8 @@
         static_configs = [
           { targets = [ "lovelace:9100" ]; }
           { targets = [ "lamport:9100" ]; }
+          { targets = [ "lee:9100" ]; }
           { targets = [ "turing:9100" ]; }
-          { targets = [ "sentry:9100" ]; }
         ];
       }
 
@@ -28,12 +28,12 @@
 
       {
         job_name = "prometheus";
-        static_configs = [ { targets = [ "sentry:9090" ]; } ];
+        static_configs = [ { targets = [ "lamport:9090" ]; } ];
       }
 
       {
         job_name = "grafana";
-        static_configs = [ { targets = [ "sentry:3000" ]; } ];
+        static_configs = [ { targets = [ "lamport:3000" ]; } ];
       }
 
       {

@@ -28,7 +28,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://sentry:9090";
+        proxyPass = "http://lamport:9090";
       };
     };
 
@@ -36,7 +36,7 @@
       useACMEHost = "lab.sdnts.dev";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://sentry:3000";
+        proxyPass = "http://lamport:3000";
         extraConfig = ''
           proxy_set_header Host grafana.lab.sdnts.dev;
           proxy_set_header Origin https://grafana.lab.sdnts.dev;
