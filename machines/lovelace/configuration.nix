@@ -3,9 +3,9 @@
   system.stateVersion = 7;
 
   networking = {
-    hostName = "mainframe";
-    localHostName = "mainframe";
-    computerName = "Mainframe";
+    hostName = "lovelace";
+    localHostName = "lovelace";
+    computerName = "Lovelace";
   };
 
   power = {

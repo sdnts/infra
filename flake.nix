@@ -140,13 +140,13 @@
           # The remaining machines are very similar. Some are macOS, others are NixOS.
 
           # Mac mini
-          mainframe = {
-            hostname = "mainframe";
+          lovelace = {
+            hostname = "lovelace";
             sshUser = "root";
             profiles.system.path = deploy.lib.aarch64-darwin.activate.darwin (
               darwin.lib.darwinSystem {
                 system = "aarch64-darwin";
-                modules = [ ./machines/mainframe ];
+                modules = [ ./machines/lovelace ];
                 specialArgs = { inherit inputs; };
               }
             );

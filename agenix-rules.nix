@@ -5,7 +5,7 @@ in
   "secrets/exa.age".publicKeys = with identity; [
     hq.ssh.users.sdnts.publicKey
     hq.ssh.host.publicKey
-    mainframe.ssh.host.publicKey
+    lovelace.ssh.host.publicKey
     cloudflare.ssh.host.publicKey
     bastion.ssh.host.publicKey
     vault.ssh.host.publicKey
