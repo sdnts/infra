@@ -9,8 +9,8 @@
     ./configuration.nix
   ];
 
-  # The `lib` module exposes a `infra.roles` option that nodes use to receive common configuration. They're free to
-  # override any of it, but I don't have to repeat all of it across similar nodes.
+  # The `lib` module exposes a `infra.roles` option that machines use to receive common configuration. They're free to
+  # override any of it, but I don't have to repeat all of it across similar machines.
   # This isn't standard NixOS. More details about my "framework" in `lib/default.nix`.
   infra.roles = [
     "tty"

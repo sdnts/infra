@@ -105,7 +105,7 @@
         nodes = {
           # MacBook Air
           hq = {
-            # The hostname deploy-rs will SSH into to deploy this configuration. All my nodes run Tailscale, so I have
+            # The hostname deploy-rs will SSH into to deploy this configuration. All my machines run Tailscale, so I have
             # these pretty hostnames instead of IP addresses.
             hostname = "hq";
             # The user deploy-rs will SSH as
@@ -125,19 +125,19 @@
               interactiveSudo = true;
               # This is the fun stuff. I'm calling a function called `deploy.lib.aarch64-darwin.activate.darwin` that
               # activates a profile. I'm in turn building that profile by calling the `darwin.lib.darwinSystem` function.
-              # The configuration of the system is in the `./nodes/hq/default.nix` file, and `inputs` are forcefully
+              # The configuration of the system is in the `./machines/hq/default.nix` file, and `inputs` are forcefully
               # injected into the hq module.
               path = deploy.lib.aarch64-darwin.activate.darwin (
                 darwin.lib.darwinSystem {
                   system = "aarch64-darwin";
-                  modules = [ ./nodes/hq ];
+                  modules = [ ./machines/hq ];
                   specialArgs = { inherit inputs; };
                 }
               );
             };
           };
 
-          # The remaining nodes are very similar. Some are macOS, others are NixOS.
+          # The remaining machines are very similar. Some are macOS, others are NixOS.
 
           # Mac mini
           mainframe = {
@@ -146,7 +146,7 @@
             profiles.system.path = deploy.lib.aarch64-darwin.activate.darwin (
               darwin.lib.darwinSystem {
                 system = "aarch64-darwin";
-                modules = [ ./nodes/mainframe ];
+                modules = [ ./machines/mainframe ];
                 specialArgs = { inherit inputs; };
               }
             );
@@ -159,7 +159,7 @@
             profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
               nixpkgs.lib.nixosSystem {
                 system = "x86_64-linux";
-                modules = [ ./nodes/bastion ];
+                modules = [ ./machines/bastion ];
                 specialArgs = { inherit inputs; };
               }
             );
@@ -172,7 +172,7 @@
             profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
               nixpkgs.lib.nixosSystem {
                 system = "x86_64-linux";
-                modules = [ ./nodes/vault ];
+                modules = [ ./machines/vault ];
                 specialArgs = { inherit inputs; };
               }
             );
@@ -185,7 +185,7 @@
             profiles.system.path = deploy.lib.x86_64-linux.activate.nixos (
               nixpkgs.lib.nixosSystem {
                 system = "x86_64-linux";
-                modules = [ ./nodes/sentry ];
+                modules = [ ./machines/sentry ];
                 specialArgs = { inherit inputs; };
               }
             );

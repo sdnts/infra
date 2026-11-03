@@ -94,11 +94,11 @@ in
           (path: {
             source = lib.mkDefault (
               if isHQ then
-                # For nodes with the `hq` role, I want to symlink dotfiles directly to a local checkout of this repo.
+                # For machines with the `hq` role, I want to symlink dotfiles directly to a local checkout of this repo.
                 # This allows me to make changes and have them reflect instantly, without having to redeploy.
                 config.lib.file.mkOutOfStoreSymlink "/Users/sdnts/Code/infra/dots/${path}"
               else
-                # On all other nodes, I want to copy the dotfiles to the Nix store and symlink from there. This protects
+                # On all other machines, I want to copy the dotfiles to the Nix store and symlink from there. This protects
                 # me from accidentally breaking things.
                 ../dots + "/${path}"
             );

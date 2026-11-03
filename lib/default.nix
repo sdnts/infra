@@ -9,13 +9,13 @@
   options = {
     # I organize my servers based on roles. Roles decide what (common) packages get installed, how dotfiles are
     # symlinked, and how common services are configured.
-    # So far I've only got two roles but I want to create more as I add more nodes to my fleet.
+    # So far I've only got two roles but I want to create more as I add more machines to my fleet.
     #
     # The `server` role sets up a node as server.
     #   - A minimal set of packages are installed to keep the node lean.
     #   - Packages useful for debugging servers are installed.
     #   - Dotfiles are symlinked to the nix store, which means changing them requires a redeployment. This makes sure
-    #     all nodes feel exactly the same, and stuff like "accidentally breaking the shell" isn't possible.
+    #     all machines feel exactly the same, and stuff like "accidentally breaking the shell" isn't possible.
     # The `tty` role sets up a node as a machine I interact with regularly.
     #   - QoL packages are installed to make the node feel nicer.
     # The `hq` role sets up a node as an administrative machine.

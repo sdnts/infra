@@ -3,7 +3,7 @@
   age.secrets = {
     netrc = {
       file = ../../secrets/netrc.age;
-      # Credentials in the netrc file are going to be used when deploying to nodes. This happens as my user, which is
+      # Credentials in the netrc file are going to be used when deploying to machines. This happens as my user, which is
       # why this file must belong to me.
       owner = "sdnts";
     };
