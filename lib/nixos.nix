@@ -24,13 +24,8 @@ in
 
   nixpkgs.overlays = [ inputs.copyparty.overlays.default ];
 
-  age = {
-    # Ask age to use the host's SSH key as its identity. This is used when decrypting secrets after profile deployment
-    identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    secrets = {
-      netrc.file = ../secrets/netrc.age;
-    };
-  };
+  # Ask age to use the host's SSH key as its identity. This is used when decrypting secrets after profile deployment
+  age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
   nix = {
     settings = {
@@ -38,8 +33,6 @@ in
         "nix-command"
         "flakes"
       ];
-      # Rex's Linux server requires a secret that's supplied via /etc/netrc
-      netrc-file = lib.mkDefault config.age.secrets.netrc.path;
       download-buffer-size = lib.mkDefault 536870912;
       warn-dirty = lib.mkDefault false;
     };
