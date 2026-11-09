@@ -94,6 +94,13 @@ rex.bind("cmd+shift+up", "pane.move.up")
 rex.bind("cmd+shift+down", "pane.move.down")
 rex.bind("cmd+shift+left", "pane.move.left")
 rex.bind("cmd+shift+right", "pane.move.right")
+rex.bind("cmd+shift+f", "pane.float")
+rex.bind("cmd+shift+m", "pane.minimize_floating")
 
+rex.bind("cmd+k", "pane.go_to")
 rex.bind("cmd+z", "pane.zoom")
 rex.bind("cmd+w", "process_aware_pane_close")
+
+rex.bind("cmd+alt+f", "pane.new_floating")
+
+rex.unbind("cmd+p") -- Unbound to allow Neovim to use it to open the file browser instead

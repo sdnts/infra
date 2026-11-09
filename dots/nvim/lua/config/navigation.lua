@@ -14,4 +14,4 @@ vim.keymap.set(
 	end,
 	{ desc = "Open file" }
 )
-vim.keymap.set("n", "<D-S-f>", function() Snacks.picker.grep() end, { desc = "Find in project" })
+vim.keymap.set("n", "<Leader>pg", function() Snacks.picker.grep() end, { desc = "Find in project" })
