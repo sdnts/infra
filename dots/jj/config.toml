@@ -9,16 +9,14 @@ backend = "ssh"
 key = "~/.ssh/id_ed25519.pub"
 behavior = "drop"
 
-[git]
-sign-on-push = true
-
 [ui]
 default-command = "log"
 editor = ["nvim", "+/^$"]
 
 [revsets]
-log = 'builtin_log() | ancestors(@, 5)'
+log = 'builtin_log() | ancestors(@, 3)'
 bookmark-advance-to = 'closest_pushable(@)'
+git-sign-on-push = "~signed() & mine()"
 
 [revset-aliases]
 'closest_pushable(to)' = '''
