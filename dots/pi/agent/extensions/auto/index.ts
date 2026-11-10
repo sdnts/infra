@@ -11,7 +11,7 @@ export default function (pi: ExtensionAPI) {
         const model = ctx.modelRegistry.find("openrouter", "deepseek/deepseek-v4.1-flash")!;
         return {
           model,
-          thinkingLevel: "low",
+          thinkingLevel: "medium",
         };
       }
 
