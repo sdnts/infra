@@ -5,7 +5,7 @@ export default function (pi: ExtensionAPI) {
     provider: "sdnts",
     id: "auto",
     name: "auto",
-    thinkingLevels: ["low", "medium", "max"],
+    thinkingLevels: ["low", "medium", "high", "max"],
     route(request, ctx) {
       if (request.thinkingLevel === "low") {
         const model = ctx.modelRegistry.find("openrouter", "deepseek/deepseek-v4.1-flash")!;
@@ -23,11 +23,19 @@ export default function (pi: ExtensionAPI) {
         };
       }
 
+      if (request.thinkingLevel === "high") {
+        const model = ctx.modelRegistry.find("openai", "gpt-6.1-sol")!;
+        return {
+          model,
+          thinkingLevel: "xhigh",
+        };
+      }
+
       if (request.thinkingLevel === "max") {
         const model = ctx.modelRegistry.find("openai", "gpt-6-astra")!;
         return {
           model,
-          thinkingLevel: "xhigh",
+          thinkingLevel: "max",
         };
       }
 

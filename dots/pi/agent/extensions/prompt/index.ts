@@ -8,9 +8,10 @@ import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
 const PROMPT_STYLE = "\x1b[48;2;48;48;48m\x1b[38;2;229;229;229m";
 const THINKING_COLORS = {
-  default: { base: [140, 140, 140], shine: [255, 255, 255] },
-  xhigh: { base: [209, 154, 102], shine: [255, 195, 122] },
-  max: { base: [170, 138, 204], shine: [220, 184, 255] },
+  instant: { base: [140, 140, 140], shine: [255, 255, 255] },
+  medium: { base: [140, 140, 140], shine: [255, 255, 255] },
+  high: { base: [209, 154, 102], shine: [255, 195, 122] },
+  ultra: { base: [170, 138, 204], shine: [220, 184, 255] },
 } as const;
 const SHINE_DURATION_MS = 200;
 const SHINE_FRAME_MS = 20;
@@ -19,7 +20,7 @@ function foreground([red, green, blue]: readonly number[]): string {
   return `\x1b[38;2;${red};${green};${blue}m`;
 }
 
-const STATUS_STYLE = foreground(THINKING_COLORS.default.base);
+const STATUS_STYLE = foreground(THINKING_COLORS.instant.base);
 const DIRECTORY_STYLE = "\x1b[38;2;105;105;105m";
 const COST_STYLE = "\x1b[38;2;75;75;75m";
 const RESET = "\x1b[0m";
@@ -110,13 +111,16 @@ class PromptEditor extends CustomEditor {
   }
 
   private renderThinkingLevel(): string {
-    const level = this.thinkingLevel ?? "";
-    const colors =
-      level === "max"
-        ? THINKING_COLORS.max
-        : level === "xhigh"
-          ? THINKING_COLORS.xhigh
-          : THINKING_COLORS.default;
+    const level = {
+      "": "instant" as const,
+      off: "instant" as const,
+      low: "instant" as const,
+      medium: "medium" as const,
+      high: "high" as const,
+      xhigh: "high" as const,
+      max: "ultra" as const,
+    }[this.thinkingLevel ?? ""]!;
+    const colors = THINKING_COLORS[level];
     return this.renderShine(level, colors, this.thinkingShineStartedAt);
   }
 
@@ -124,7 +128,7 @@ class PromptEditor extends CustomEditor {
     const labelWidth = Math.max(0, Math.floor(width / 2) - 3);
     const labels = [
       {
-        text: `${this.renderShine(this.modelName, THINKING_COLORS.default, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
+        text: `${this.renderShine(this.modelName, THINKING_COLORS.instant, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
         style: STATUS_STYLE,
       },
       {
