@@ -3,20 +3,20 @@ let
 in
 {
   "secrets/exa.age".publicKeys = with identity; [
-    hopper.ssh.users.sdnts.publicKey
-    hopper.ssh.host.publicKey
-    lovelace.ssh.host.publicKey
-    cloudflare.ssh.host.publicKey
-    turing.ssh.host.publicKey
-    lamport.ssh.host.publicKey
-    lee.ssh.host.publicKey
+    operators.sdnts.ssh.publicKey
+    machines.hopper.ssh.publicKey
+    machines.lovelace.ssh.publicKey
+    machines.cloudflare.ssh.publicKey
+    machines.turing.ssh.publicKey
+    machines.lamport.ssh.publicKey
+    machines.lee.ssh.publicKey
   ];
   "secrets/nginx.age".publicKeys = with identity; [
-    hopper.ssh.users.sdnts.publicKey
-    lamport.ssh.host.publicKey
+    operators.sdnts.ssh.publicKey
+    machines.lamport.ssh.publicKey
   ];
   "secrets/grafana.age".publicKeys = with identity; [
-    hopper.ssh.users.sdnts.publicKey
-    lamport.ssh.host.publicKey
+    operators.sdnts.ssh.publicKey
+    machines.lamport.ssh.publicKey
   ];
 }

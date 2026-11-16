@@ -32,11 +32,11 @@ there.
 
 All secrets are encrypted with [age](https://github.com/FiloSottile/age) and managed using [agenix](https://github.com/ryantm/agenix).
 
-`age` / `agenix` use SSH keys to encrypt and decrypt secrets. SSH keys for all machines is defined in an [Identities file](./identity.nix).
-These identities are set up to be copied to the right machines. They control who can encrypt and / or read secrets. In 
-general, HQ is always included, since I create secrets using HQ's SSH key. Machines that receive these secrets are also
-included so they can read the secret during deploy-rs' profile activation. For example, I run nginx on the Lamport machine,
-so the `nginx.age` secret is encrypted with both HQ and Lamport's keys.
+`age` / `agenix` use SSH keys to encrypt and decrypt secrets. SSH keys for all operators & machines are defined in an
+[Identities file](./identity.nix). These identities are set up to be copied to the right machines. They control who can
+encrypt and / or read secrets. In general, HQ is always included, since I create secrets using HQ's SSH key. Machines
+that receive these secrets are also included so they can read the secret during deploy-rs' profile activation. For
+example, I run nginx on the Lamport machine, so the `nginx.age` secret is encrypted with both mine and Lamport's keys.
 
 ### Creating new secrets
 
