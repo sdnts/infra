@@ -109,9 +109,9 @@
 
       darwinConfigurations = {
         # MacBook Air
-        hq = darwin.lib.darwinSystem {
+        hopper = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          modules = [ ./machines/hq ];
+          modules = [ ./machines/hopper ];
           specialArgs = { inherit inputs; };
         };
 
@@ -142,11 +142,10 @@
         # deploy-rs calls machines "nodes". Inside the `nodes` attr set, I'm describing what I want the configuration of
         # each machine to look like
         nodes = {
-          # MacBook Air
-          hq = {
+          hopper = {
             # The hostname deploy-rs will SSH into to deploy this configuration. All my machines run Tailscale, so I have
             # these pretty hostnames instead of IP addresses.
-            hostname = "hq";
+            hostname = "hopper";
             # The user deploy-rs will SSH as
             sshUser = "sdnts";
             # Disabling remoteBuild for this specific node because I use my MacBook to deploy to every other node.
@@ -166,7 +165,7 @@
               # activates a profile. I'm in turn building that profile by calling the `darwin.lib.darwinSystem` function.
               # The configuration of the system is in the `./machines/hq/default.nix` file, and `inputs` are forcefully
               # injected into the hq module.
-              path = deploy.lib.aarch64-darwin.activate.darwin self.darwinConfigurations.hq;
+              path = deploy.lib.aarch64-darwin.activate.darwin self.darwinConfigurations.hopper;
             };
           };
 

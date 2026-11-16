@@ -3,8 +3,8 @@ let
 in
 {
   "secrets/exa.age".publicKeys = with identity; [
-    hq.ssh.users.sdnts.publicKey
-    hq.ssh.host.publicKey
+    hopper.ssh.users.sdnts.publicKey
+    hopper.ssh.host.publicKey
     lovelace.ssh.host.publicKey
     cloudflare.ssh.host.publicKey
     turing.ssh.host.publicKey
@@ -12,11 +12,11 @@ in
     lee.ssh.host.publicKey
   ];
   "secrets/nginx.age".publicKeys = with identity; [
-    hq.ssh.users.sdnts.publicKey
+    hopper.ssh.users.sdnts.publicKey
     lamport.ssh.host.publicKey
   ];
   "secrets/grafana.age".publicKeys = with identity; [
-    hq.ssh.users.sdnts.publicKey
+    hopper.ssh.users.sdnts.publicKey
     lamport.ssh.host.publicKey
   ];
 }

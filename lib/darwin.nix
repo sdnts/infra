@@ -58,7 +58,7 @@ in
     # SSH is controlled by Tailscale policies, so no `authorizedKeys` here!
   };
   users.users.root.openssh.authorizedKeys.keys = lib.mkForce [
-    identity.hq.ssh.users.sdnts.publicKey
+    identity.hopper.ssh.users.sdnts.publicKey
   ];
 
   homebrew = {

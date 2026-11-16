@@ -1,11 +1,11 @@
-{ config, ... }:
+{ ... }:
 {
   system.stateVersion = 7;
 
   networking = {
-    hostName = "hq";
-    localHostName = "hq";
-    computerName = "HQ";
+    hostName = "hopper";
+    localHostName = "hopper";
+    computerName = "Hopper";
   };
 
   homebrew = {

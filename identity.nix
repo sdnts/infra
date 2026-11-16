@@ -1,5 +1,5 @@
 {
-  hq = {
+  hopper = {
     ssh = {
       host.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIElyCp73bj6rynqXtidNGtIRLm5/ZIcMO2l19RB2yHWv";
       users.sdnts.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMWGM4NdIRG/7JuEZInmXCOk/SzVmElszaXoY2az+XnA";
