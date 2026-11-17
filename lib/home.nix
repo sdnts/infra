@@ -8,23 +8,12 @@
 let
   isServer = builtins.elem "server" config.infra.roles;
   isTTY = builtins.elem "tty" config.infra.roles;
-  isHQ = builtins.elem "hq" config.infra.roles;
+
+  homeDirectoryBehaviour = config.infra.home;
 in
 {
   age.secrets = {
-    exa = {
-      file = ../secrets/exa.age;
-      owner = "sdnts";
-    };
   };
-
-  programs.fish.shellInit = ''
-    if status is-interactive; and test "$USER" = sdnts
-      if test -r ${config.age.secrets.exa.path}
-        source ${config.age.secrets.exa.path}
-      end
-    end
-  '';
 
   home-manager = {
     useGlobalPkgs = lib.mkDefault true;
@@ -38,10 +27,6 @@ in
         pkgs.dig
         pkgs.eza
         pkgs.vim
-
-        pkgs.nodejs
-        pkgs.pnpm
-        inputs.pi.packages.${pkgs.stdenv.hostPlatform.system}.default
       ]
       ++ lib.optionals isServer [ ]
       ++ lib.optionals isTTY [
@@ -50,7 +35,6 @@ in
         pkgs.git
         pkgs.jujutsu
         pkgs.nodejs
-        pkgs.nushell
         pkgs.zig
         pkgs.zoxide
 
@@ -70,69 +54,59 @@ in
         pkgs.zls
         # Formatters
         pkgs.nixfmt
-        pkgs.nufmt
         pkgs.stylua
         # Neovim Support
         pkgs.tree-sitter
         pkgs.ripgrep
-      ]
-      ++ lib.optionals isHQ [
+
         inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
         inputs.deploy.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+        pkgs.nodejs
+        pkgs.pnpm
+        inputs.pi.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 
-      xdg.configFile =
+      home.file =
         lib.genAttrs
           [
-            "fish"
-            "git"
-            "hunk"
-            "jj"
-            "nvim"
-            "posting"
-            "rex"
-            "ssh"
+            ".config/fish/config.fish"
+            ".config/git/config"
+            ".config/hunk/config.toml"
+            ".config/jj/config.toml"
+            ".config/nvim"
+            ".config/posting/config.yaml"
+            ".config/rex"
+            ".config/ssh/config"
+
+            ".pi/agent/extensions/aside"
+            ".pi/agent/extensions/auto"
+            ".pi/agent/extensions/draw"
+            ".pi/agent/extensions/prompt"
+            ".pi/agent/extensions/webshot"
+            ".pi/agent/skills"
+            ".pi/agent/APPEND_SYSTEM.md"
+            ".pi/agent/keybindings.json"
+            ".pi/agent/mcp.json"
+            ".pi/agent/models.json"
+            ".pi/agent/settings.json"
+
+            ".clickhouse-cli.rc"
+            ".npmrc"
           ]
           (path: {
             source = lib.mkDefault (
-              if isHQ then
-                # For machines with the `hq` role, I want to symlink dotfiles directly to a local checkout of this repo.
-                # This allows me to make changes and have them reflect instantly, without having to redeploy.
-                config.lib.file.mkOutOfStoreSymlink "/Users/sdnts/Code/infra/dots/${path}"
+              # If requested, symlink dotfiles directly to a local checkout of this repo.
+              # This allows me to make changes and have them reflect instantly, without having to redeploy.
+              if homeDirectoryBehaviour == "symlink" then
+                config.lib.file.mkOutOfStoreSymlink "/Users/sdnts/Code/infra/home/${path}"
               else
-                # On all other machines, I want to copy the dotfiles to the Nix store and symlink from there. This protects
-                # me from accidentally breaking things.
-                ../dots + "/${path}"
+                # Otherwise, copy the dotfiles to the Nix store and symlink from there. This protects me from
+                # accidentally breaking things.
+                ../home + "/${path}"
             );
             recursive = lib.mkForce true;
           });
-
-      home.file.".clickhouse-cli.rc".source = lib.mkDefault (
-        if isHQ then
-          # Same here, symlink to a local checkout of this repo, if this is a node with the `hq` role.
-          config.lib.file.mkOutOfStoreSymlink "/Users/sdnts/Code/infra/dots/clickhouse-cli/.clickhouse-cli.rc"
-        else
-          # Otherwise symlink from the Nix store.
-          ../dots/clickhouse-cli/.clickhouse-cli.rc
-      );
-      home.file.".npmrc".source = lib.mkDefault (
-        if isHQ then
-          config.lib.file.mkOutOfStoreSymlink "/Users/sdnts/Code/infra/dots/npm/.npmrc"
-        else
-          ../dots/npm/.npmrc
-      );
-      home.file.".pi" = {
-        source = lib.mkDefault (
-          if isHQ then
-            config.lib.file.mkOutOfStoreSymlink "/Users/sdnts/Code/infra/dots/pi"
-          else
-            pkgs.lib.cleanSourceWith {
-              src = ../dots/pi;
-              filter = path: type: baseNameOf path != "node_modules";
-            }
-        );
-        recursive = lib.mkForce true;
-      };
     };
   };
 }

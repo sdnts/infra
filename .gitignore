@@ -2,15 +2,15 @@
 node_modules
 TODO.md
 
-dots/jj/repos
+home/.config/jj/repos
 
-dots/fish/fish_variables
+home/.config/fish/fish_variables
 
-dots/pi/agent/sessions
-dots/pi/agent/auth.json
-dots/pi/agent/crashes.json
-dots/pi/agent/models-store.json
-dots/pi/agent/mcp-auth.json
-dots/pi/agent/mcp-cache.json
-dots/pi/agent/trust.json
-dots/pi/cache
+home/.pi/agent/sessions
+home/.pi/agent/auth.json
+home/.pi/agent/crashes.json
+home/.pi/agent/models-store.json
+home/.pi/agent/mcp-auth.json
+home/.pi/agent/mcp-cache.json
+home/.pi/agent/trust.json
+home/.pi/cache

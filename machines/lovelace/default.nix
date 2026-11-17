@@ -9,4 +9,5 @@
   ];
 
   infra.roles = [ "tty" ];
+  infra.home = "copy";
 }

@@ -13,4 +13,5 @@
   ];
 
   infra.roles = [ "server" ];
+  infra.home = "copy";
 }
