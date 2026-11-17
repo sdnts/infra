@@ -16,7 +16,7 @@ export default function (pi: ExtensionAPI) {
       }
 
       if (request.thinkingLevel === "medium") {
-        const model = ctx.modelRegistry.find("openai", "gpt-6.1-sol")!;
+        const model = ctx.modelRegistry.find("openai", "gpt-6.2-sol")!;
         return {
           model,
           thinkingLevel: "medium",
@@ -24,7 +24,7 @@ export default function (pi: ExtensionAPI) {
       }
 
       if (request.thinkingLevel === "high") {
-        const model = ctx.modelRegistry.find("openai", "gpt-6.1-sol")!;
+        const model = ctx.modelRegistry.find("openai", "gpt-6.2-sol")!;
         return {
           model,
           thinkingLevel: "xhigh",
@@ -32,7 +32,7 @@ export default function (pi: ExtensionAPI) {
       }
 
       if (request.thinkingLevel === "max") {
-        const model = ctx.modelRegistry.find("openai", "gpt-6-astra")!;
+        const model = ctx.modelRegistry.find("openai", "gpt-6.2-astra")!;
         return {
           model,
           thinkingLevel: "max",
