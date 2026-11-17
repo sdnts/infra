@@ -81,11 +81,7 @@ in
       MaxRetentionSec = lib.mkDefault "7day";
     };
 
-    rex.loginServer = {
-      enable = true;
-      tailscaleServe.enable = true;
-      accounts.sdnts.principals = [ "tailscale:sdnts@github" ];
-    };
+    rex.enable = true;
 
     tailscale = {
       enable = lib.mkForce true;
