@@ -4,6 +4,7 @@ import { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 type OmlxModel = {
   id: string;
+  model_alias?: string;
   max_context_window: number;
   reasoning_levels: ThinkingLevel[];
   max_tokens: number;
@@ -14,9 +15,7 @@ export default function (pi: ExtensionAPI) {
     createProvider({
       id: "omlx",
       name: "oMLX",
-      api: {
-        "openai-responses": openAICompletionsApi(),
-      },
+      api: { "openai-responses": openAICompletionsApi() },
       auth: {
         apiKey: {
           name: "default",
@@ -33,7 +32,7 @@ export default function (pi: ExtensionAPI) {
 
         return res.models.map((m) => ({
           provider: "omlx",
-          id: m.id,
+          id: m.model_alias ?? m.id,
           name: m.id,
           baseUrl,
           api: "openai-responses",
