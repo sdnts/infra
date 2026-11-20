@@ -4,7 +4,7 @@
   services.copyparty = {
     enable = true;
     settings = {
-      i = "0.0.0.0";
+      i = "127.0.0.1";
       allow-csrf = true;
     };
 

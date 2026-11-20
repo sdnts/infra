@@ -12,118 +12,79 @@
     enable = true;
     clientMaxBodySize = "128m";
 
-    virtualHosts."lab.sdnts.dev" = {
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        return = "200 '<html><body>It works</body></html>'";
-        extraConfig = ''
-          default_type text/html;
-        '';
-      };
-    };
-
-    virtualHosts."metrics.lab.sdnts.dev" = {
-      serverAliases = [ "prometheus.lab.sdnts.dev" ];
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://lamport:9090";
-      };
-    };
-
-    virtualHosts."grafana.lab.sdnts.dev" = {
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://lamport:3000";
-        extraConfig = ''
-          proxy_set_header Host grafana.lab.sdnts.dev;
-          proxy_set_header Origin https://grafana.lab.sdnts.dev;
-        '';
+    # Routes for services that warrant a pretty URL (*.lab.sdnts.dev). These URLs are useful when sharing with non-
+    # technical family members.
+    # Tailscale policies are set up to allow any tailnet member access to these services, so administrative services
+    # such as Prometheus etc. are excluded. Admin services are accessed over their *.panthera-flops.ts.net addresses.
+    virtualHosts = {
+      "ai.lab.sdnts.dev" = {
+        serverAliases = [ "omlx.lab.sdnts.dev" ];
+        useACMEHost = "lab.sdnts.dev";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "https://omlx.panthera-flops.ts.net";
+          recommendedProxySettings = true;
+          extraConfig = ''
+            proxy_ssl_server_name on;
+          '';
+        };
       };
 
-      # Disable routing to the metrics endpoint. Prometheus will reach out to the host directly (bypassing nginx). This
-      # prevents metrics from being accidentally exposed publicly.
-      locations."= /metrics".return = "404";
-    };
-
-    virtualHosts."restic.lab.sdnts.dev" = {
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://turing:8990";
-        extraConfig = ''
-          client_max_body_size 64M;
-        '';
-      };
-    };
-
-    virtualHosts."turing.lab.sdnts.dev" = {
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://turing:3923";
-      };
-    };
-
-    virtualHosts."tv.lab.sdnts.dev" = {
-      serverAliases = [ "jellyfin.lab.sdnts.dev" ];
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://turing:8096";
+      "ha.lab.sdnts.dev" = {
+        serverAliases = [ "homeassistant.lab.sdnts.dev" ];
+        useACMEHost = "lab.sdnts.dev";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "https://home-assistant.panthera-flops.ts.net";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_ssl_server_name on;
+          '';
+        };
       };
 
-      # Disable routing to the metrics endpoint. Prometheus will reach out to the host directly (bypassing nginx). This
-      # prevents metrics from being accidentally exposed publicly.
-      locations."= /metrics".return = "404";
-    };
-
-    virtualHosts."recipes.lab.sdnts.dev" = {
-      serverAliases = [ "mealie.lab.sdnts.dev" ];
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://turing:9000";
+      "photos.lab.sdnts.dev" = {
+        serverAliases = [ "immich.lab.sdnts.dev" ];
+        useACMEHost = "lab.sdnts.dev";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "https://immich.panthera-flops.ts.net";
+          proxyWebsockets = true;
+          recommendedProxySettings = true;
+          extraConfig = ''
+            proxy_ssl_server_name on;
+            proxy_request_buffering off;
+            proxy_read_timeout 600s;
+            proxy_send_timeout 600s;
+            send_timeout 600s;
+          '';
+        };
       };
-    };
 
-    virtualHosts."photos.lab.sdnts.dev" = {
-      serverAliases = [ "immich.lab.sdnts.dev" ];
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://turing:2283";
-        extraConfig = ''
-          proxy_request_buffering off;
-          proxy_read_timeout 600s;
-          proxy_send_timeout 600s;
-          send_timeout 600s;
-        '';
+      "recipes.lab.sdnts.dev" = {
+        serverAliases = [ "mealie.lab.sdnts.dev" ];
+        useACMEHost = "lab.sdnts.dev";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "https://mealie.panthera-flops.ts.net";
+          recommendedProxySettings = true;
+          extraConfig = ''
+            proxy_ssl_server_name on;
+          '';
+        };
       };
-    };
 
-    virtualHosts."ha.lab.sdnts.dev" = {
-      serverAliases = [ "homeassistant.lab.sdnts.dev" ];
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://pascal:8123";
-        extraConfig = ''
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        '';
-      };
-    };
-
-    virtualHosts."ai.lab.sdnts.dev" = {
-      serverAliases = [ "omlx.lab.sdnts.dev" ];
-      useACMEHost = "lab.sdnts.dev";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://lovelace:3103";
+      "tv.lab.sdnts.dev" = {
+        serverAliases = [ "jellyfin.lab.sdnts.dev" ];
+        useACMEHost = "lab.sdnts.dev";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "https://jellyfin.panthera-flops.ts.net";
+          recommendedProxySettings = true;
+          extraConfig = ''
+            proxy_ssl_server_name on;
+          '';
+        };
       };
     };
   };
