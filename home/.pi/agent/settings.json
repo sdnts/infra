@@ -3,10 +3,14 @@
   "quietStartup": true,
   "hideThinkingBlock": true,
   "tuiMode": "regular",
+  "enabledModels": [
+    "omlx/inkling-2-mini",
+    "openai/gpt-6.2-sol",
+    "openai/gpt-6.2-astra"
+  ],
+  "defaultModel": "inkling-2-mini",
+  "defaultThikingLevel": "medium",
   "defaultTools": [
     "+codemode"
-  ],
-  "enabledModels": [
-    "sdnts/auto:low"
   ]
 }

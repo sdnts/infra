@@ -1,6 +1,14 @@
 {
   "app.models.toggleProvider": [],
   "app.session.togglePath": [],
-  "app.model.cycleForward": [],
-  "app.model.cycleBackward": []
+  "app.message.dequeue": [],
+  "app.model.cycleForward": [
+    "shift+right"
+  ],
+  "app.model.cycleBackward": [
+    "shift+left"
+  ],
+  "app.thinking.cycle": [],
+  "app.models.reorderUp": [],
+  "app.models.reorderDown": []
 }

@@ -69,13 +69,13 @@ rex.action({
 -- Keybinds --
 --------------
 
--- Sessions
+-- Sessions --
 rex.bind("cmd+s", "client.mode.enter", { name = "session", once = true })
 rex.bind("session/cmd+s", "session.switch")
 rex.bind("session/cmd+n", "session.new")
 rex.bind("session/cmd+r", "session.rename")
 
--- Tabs
+-- Tabs --
 rex.bind("cmd+r", "client.tab.rename")
 
 rex.bind("cmd+]", "client.tab.next")
@@ -104,4 +104,7 @@ rex.bind("cmd+alt+enter", "pane.new_floating")
 rex.bind("cmd+shift+enter", "pane.float")
 rex.bind("cmd+shift+m", "pane.minimize_floating")
 
+-- Misc --
+
 rex.unbind("cmd+p") -- Unbound to allow Neovim to use it to open the file browser instead
+rex.unbind("cmd+.") -- Unbound to allow Neovim to use it to show code actions

@@ -1,45 +1,40 @@
+import { ThinkingLevel } from "@earendil-works/pi-ai";
 import { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {
-  pi.registerVirtualModel({
-    provider: "sdnts",
-    id: "auto",
-    name: "auto",
-    thinkingLevels: ["low", "medium", "high", "max"],
-    route(request, ctx) {
-      if (request.thinkingLevel === "low") {
-        const model = ctx.modelRegistry.find("omlx", "inkling-2-mini")!;
-        return {
-          model,
-          thinkingLevel: "medium",
-        };
-      }
+  pi.registerShortcut("shift+up", {
+    description: "Increase thinking level",
+    handler: (ctx) => {
+      if (ctx.thinkingLevel === "off") return;
 
-      if (request.thinkingLevel === "medium") {
-        const model = ctx.modelRegistry.find("openai", "gpt-6.2-sol")!;
-        return {
-          model,
-          thinkingLevel: "medium",
-        };
-      }
+      const nextThinkingLevel: Record<ThinkingLevel, ThinkingLevel> = {
+        minimal: "low",
+        low: "medium",
+        medium: "high",
+        high: "xhigh",
+        xhigh: "max",
+        max: "low",
+      };
 
-      if (request.thinkingLevel === "high") {
-        const model = ctx.modelRegistry.find("openai", "gpt-6.2-sol")!;
-        return {
-          model,
-          thinkingLevel: "xhigh",
-        };
-      }
+      pi.setThinkingLevel(nextThinkingLevel[ctx.thinkingLevel!]);
+    },
+  });
 
-      if (request.thinkingLevel === "max") {
-        const model = ctx.modelRegistry.find("openai", "gpt-6.2-astra")!;
-        return {
-          model,
-          thinkingLevel: "max",
-        };
-      }
+  pi.registerShortcut("shift+down", {
+    description: "Decrease thinking level",
+    handler: (ctx) => {
+      if (ctx.thinkingLevel === "off") return;
 
-      throw new Error(`Unknown thinking level: ${request.thinkingLevel}`);
+      const previousThinkingLevel: Record<ThinkingLevel, ThinkingLevel> = {
+        max: "low",
+        xhigh: "high",
+        high: "medium",
+        medium: "low",
+        low: "max",
+        minimal: "max",
+      };
+
+      pi.setThinkingLevel(previousThinkingLevel[ctx.thinkingLevel!]);
     },
   });
 }
