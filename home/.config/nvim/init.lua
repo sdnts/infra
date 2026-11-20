@@ -101,6 +101,7 @@ require("snacks").setup({
 })
 
 require("config.ai")
+require("config.debugger")
 require("config.edits")
 require("config.explorer")
 require("config.formatter")
