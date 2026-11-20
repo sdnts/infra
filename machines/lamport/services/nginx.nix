@@ -117,6 +117,15 @@
         '';
       };
     };
+
+    virtualHosts."ai.lab.sdnts.dev" = {
+      serverAliases = [ "omlx.lab.sdnts.dev" ];
+      useACMEHost = "lab.sdnts.dev";
+      forceSSL = true;
+      locations."/" = {
+        proxyPass = "http://lovelace:3103";
+      };
+    };
   };
 
   security.acme = {

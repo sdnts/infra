@@ -8,7 +8,7 @@ export default function (pi: ExtensionAPI) {
     thinkingLevels: ["low", "medium", "high", "max"],
     route(request, ctx) {
       if (request.thinkingLevel === "low") {
-        const model = ctx.modelRegistry.find("openrouter", "deepseek/deepseek-v4.1-flash")!;
+        const model = ctx.modelRegistry.find("omlx", "Inkling-2-Mini-oQ4e-mtp")!;
         return {
           model,
           thinkingLevel: "medium",
