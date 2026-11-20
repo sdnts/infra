@@ -88,7 +88,6 @@ vim.keymap.set("n", "zz", "za", { desc = "Toggle fold on cursor" })
 
 vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" })
 require("mini.keymap").setup()
-require("mini.cmdline").setup()
 require("mini.clue").setup({ triggers = { { mode = { "n", "x" }, keys = "<Leader>" } } })
 
 vim.pack.add({ "https://github.com/folke/snacks.nvim" })
