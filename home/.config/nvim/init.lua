@@ -23,6 +23,7 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.winborder = "rounded"
 vim.opt.cmdheight = 0
+vim.opt.laststatus = 3 -- Show a common footer (instead of one per split). Splits are separated by horizontal lines instead
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
 
