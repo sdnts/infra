@@ -29,14 +29,6 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highl
 vim.pack.add({ "https://github.com/sainnhe/everforest" })
 vim.g.everforest_background = "hard"
 vim.cmd.colorscheme("everforest")
-
-vim.pack.add({ "https://github.com/tadaa/vimade" })
-require("vimade").setup({
-	recipe = { "default", { animate = false } },
-	ncmode = "windows",
-	fadelevel = 0.75,
-})
-
 ------------
 -- Keymap --
 ------------
@@ -117,6 +109,7 @@ require("config.navigation")
 require("config.sessions")
 require("config.splash")
 require("config.statusline")
+require("config.ui")
 
 vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
