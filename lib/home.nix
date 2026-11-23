@@ -79,9 +79,8 @@ in
             ".config/rex"
             ".config/ssh/config"
 
-            ".pi/agent/extensions/aside"
-            ".pi/agent/extensions/auto"
             ".pi/agent/extensions/draw"
+            ".pi/agent/extensions/keys"
             ".pi/agent/extensions/omlx"
             ".pi/agent/extensions/prompt"
             ".pi/agent/extensions/webshot"
