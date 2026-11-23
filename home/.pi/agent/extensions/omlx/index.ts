@@ -38,6 +38,15 @@ export default function (pi: ExtensionAPI) {
           api: "openai-responses",
           input: ["text"],
           reasoning: true,
+          thinkingLevelMap: {
+            off: "off",
+            minimal: "low",
+            low: m.reasoning_levels.includes("low") ? "low" : null,
+            medium: m.reasoning_levels.includes("medium") ? "medium" : null,
+            high: m.reasoning_levels.includes("high") ? "high" : null,
+            xhigh: m.reasoning_levels.includes("xhigh") ? "xhigh" : null,
+            max: m.reasoning_levels.includes("max") ? "max" : null,
+          },
           contextWindow: m.max_context_window,
           maxTokens: m.max_tokens,
           cost: {
