@@ -17,19 +17,6 @@
     # Tailscale policies are set up to allow any tailnet member access to these services, so administrative services
     # such as Prometheus etc. are excluded. Admin services are accessed over their *.panthera-flops.ts.net addresses.
     virtualHosts = {
-      "ha.lab.sdnts.dev" = {
-        serverAliases = [ "homeassistant.lab.sdnts.dev" ];
-        useACMEHost = "lab.sdnts.dev";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "https://home-assistant.panthera-flops.ts.net";
-          proxyWebsockets = true;
-          extraConfig = ''
-            proxy_ssl_server_name on;
-          '';
-        };
-      };
-
       "photos.lab.sdnts.dev" = {
         serverAliases = [ "immich.lab.sdnts.dev" ];
         useACMEHost = "lab.sdnts.dev";
@@ -44,32 +31,6 @@
             proxy_read_timeout 600s;
             proxy_send_timeout 600s;
             send_timeout 600s;
-          '';
-        };
-      };
-
-      "recipes.lab.sdnts.dev" = {
-        serverAliases = [ "mealie.lab.sdnts.dev" ];
-        useACMEHost = "lab.sdnts.dev";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "https://mealie.panthera-flops.ts.net";
-          recommendedProxySettings = true;
-          extraConfig = ''
-            proxy_ssl_server_name on;
-          '';
-        };
-      };
-
-      "tv.lab.sdnts.dev" = {
-        serverAliases = [ "jellyfin.lab.sdnts.dev" ];
-        useACMEHost = "lab.sdnts.dev";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "https://jellyfin.panthera-flops.ts.net";
-          recommendedProxySettings = true;
-          extraConfig = ''
-            proxy_ssl_server_name on;
           '';
         };
       };
