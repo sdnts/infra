@@ -2,12 +2,13 @@ import { ThinkingLevel } from "@earendil-works/pi-ai";
 import { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {
-  pi.registerShortcut("shift+up", {
+  pi.registerShortcut("shift+right", {
     description: "Increase thinking level",
     handler: (ctx) => {
-      if (ctx.thinkingLevel === "off") return;
+      if (ctx.thinkingLevel === undefined) return;
 
-      const nextThinkingLevel: Record<ThinkingLevel, ThinkingLevel> = {
+      const nextThinkingLevel: Record<ThinkingLevel | "off", ThinkingLevel> = {
+        off: "low",
         minimal: "low",
         low: "medium",
         medium: "high",
@@ -16,25 +17,26 @@ export default function (pi: ExtensionAPI) {
         max: "low",
       };
 
-      pi.setThinkingLevel(nextThinkingLevel[ctx.thinkingLevel!]);
+      pi.setThinkingLevel(nextThinkingLevel[ctx.thinkingLevel]);
     },
   });
 
-  pi.registerShortcut("shift+down", {
+  pi.registerShortcut("shift+left", {
     description: "Decrease thinking level",
     handler: (ctx) => {
-      if (ctx.thinkingLevel === "off") return;
+      if (ctx.thinkingLevel === undefined) return;
 
-      const previousThinkingLevel: Record<ThinkingLevel, ThinkingLevel> = {
+      const previousThinkingLevel: Record<ThinkingLevel | "off", ThinkingLevel> = {
         max: "low",
         xhigh: "high",
         high: "medium",
         medium: "low",
         low: "max",
         minimal: "max",
+        off: "max",
       };
 
-      pi.setThinkingLevel(previousThinkingLevel[ctx.thinkingLevel!]);
+      pi.setThinkingLevel(previousThinkingLevel[ctx.thinkingLevel]);
     },
   });
 }

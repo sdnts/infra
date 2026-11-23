@@ -5,226 +5,254 @@ import {
   type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import type { ThinkingLevel } from "@earendil-works/pi-ai";
 
-const PROMPT_STYLE = "\x1b[48;2;48;48;48m\x1b[38;2;229;229;229m";
-const THINKING_COLORS = {
-  instant: { base: [140, 140, 140], shine: [255, 255, 255] },
-  medium: { base: [140, 140, 140], shine: [255, 255, 255] },
-  high: { base: [209, 154, 102], shine: [255, 195, 122] },
-  ultra: { base: [170, 138, 204], shine: [220, 184, 255] },
-} as const;
-const SHINE_DURATION_MS = 200;
-const SHINE_FRAME_MS = 20;
-
-function foreground([red, green, blue]: readonly number[]): string {
+function foreground(red: number, green: number, blue: number): string {
   return `\x1b[38;2;${red};${green};${blue}m`;
 }
+function background(red: number, green: number, blue: number): string {
+  return `\x1b[48;2;${red};${green};${blue}m`;
+}
 
-const STATUS_STYLE = foreground(THINKING_COLORS.instant.base);
-const DIRECTORY_STYLE = "\x1b[38;2;105;105;105m";
-const COST_STYLE = "\x1b[38;2;75;75;75m";
-const RESET = "\x1b[0m";
+const COLORS = {
+  reset: "\x1b[0m",
+  background: background(48, 48, 48),
+  model: { base: foreground(140, 140, 140), glint: foreground(255, 255, 255) },
+  separator: foreground(140, 140, 140),
+  thinking: (level: ThinkingLevel | "off") => {
+    if (level === "max")
+      return { base: foreground(170, 138, 204), glint: foreground(220, 184, 255) };
+    if (level === "xhigh")
+      return { base: foreground(209, 154, 102), glint: foreground(255, 195, 122) };
+    return { base: foreground(140, 140, 140), glint: foreground(255, 255, 255) };
+  },
+  cwd: foreground(105, 105, 105),
+  cost: foreground(75, 75, 75),
+};
 
-class PromptEditor extends CustomEditor {
-  private modelName = "";
-  private thinkingLevel: string | undefined;
-  private directory = "";
-  private modelShineStartedAt: number | undefined;
-  private thinkingShineStartedAt: number | undefined;
-  private shineTimer: ReturnType<typeof setInterval> | undefined;
-  getCost: () => number = () => 0;
+class Editor extends CustomEditor {
+  public model = "(Unknown)";
+  public thinkingLevel: ThinkingLevel | "off" = "off";
+  public cwd = "~";
+  public cost = 0;
 
-  // Pi copies the configurable editor padding onto custom editors after creation.
-  // This prompt always reserves one cell on each side of its terminal region.
-  override setPaddingX(_padding: number): void {
-    super.setPaddingX(1);
-  }
-
-  setStatus(modelName: string, thinkingLevel: string, directory: string): void {
-    const now = Date.now();
-    if (this.modelName && this.modelName !== modelName) {
-      this.modelShineStartedAt = now;
+  private glints: Record<
+    "model" | "thinkingLevel",
+    {
+      progress: number;
+      timeout?: NodeJS.Timeout;
+      interval?: NodeJS.Timeout;
     }
-    if (this.thinkingLevel !== undefined && this.thinkingLevel !== thinkingLevel) {
-      this.thinkingShineStartedAt = now;
-    }
-    this.startShineTimer();
-    this.modelName = modelName;
-    this.thinkingLevel = thinkingLevel;
-    this.directory = directory;
-    this.tui.requestRender();
-  }
+  > = {
+    model: { progress: 0 },
+    thinkingLevel: { progress: 0 },
+  };
 
-  private startShineTimer(): void {
-    if (this.modelShineStartedAt !== undefined || this.thinkingShineStartedAt !== undefined) {
-      this.shineTimer ??= setInterval(() => {
-        const now = Date.now();
-        if (
-          this.modelShineStartedAt !== undefined &&
-          now - this.modelShineStartedAt >= SHINE_DURATION_MS
-        ) {
-          this.modelShineStartedAt = undefined;
-        }
-        if (
-          this.thinkingShineStartedAt !== undefined &&
-          now - this.thinkingShineStartedAt >= SHINE_DURATION_MS
-        ) {
-          this.thinkingShineStartedAt = undefined;
-        }
-        if (this.modelShineStartedAt === undefined && this.thinkingShineStartedAt === undefined) {
-          this.stopShine();
-        }
+  enqueueGlint(target: "model" | "thinkingLevel") {
+    const increment = 10;
+    const deltaMs = 20;
+    const durationMs = deltaMs * increment;
+
+    this.cancelGlint(target);
+    this.glints[target] = {
+      progress: 0,
+      interval: setInterval(() => {
+        this.glints[target].progress += increment;
         this.tui.requestRender();
-      }, SHINE_FRAME_MS);
-    }
+      }, deltaMs),
+      timeout: setTimeout(() => {
+        clearInterval(this.glints[target].interval);
+        this.glints[target].progress = 0;
+        this.tui.requestRender();
+      }, durationMs),
+    };
   }
 
-  stopShine(): void {
-    if (this.shineTimer !== undefined) clearInterval(this.shineTimer);
-    this.shineTimer = undefined;
-    this.modelShineStartedAt = undefined;
-    this.thinkingShineStartedAt = undefined;
+  cancelGlint(target: "model" | "thinkingLevel") {
+    clearInterval(this.glints[target].interval);
+    clearTimeout(this.glints[target].timeout);
+    this.glints[target].progress = 0;
   }
 
-  private renderShine(
-    text: string,
-    colors: { base: readonly number[]; shine: readonly number[] },
-    startedAt: number | undefined,
-  ): string {
-    if (startedAt === undefined) {
-      return foreground(colors.base) + text;
-    }
+  override render(width: number) {
+    // This is the layout we're after:
+    //------------------------------------------------------------
+    //  <prompt> |                         model · thinkingLevel
+    //                                     cwd             $0.00
+    //------------------------------------------------------------
+    //
+    // - The editor section as a whole has a dark gray background for contrast against the dark terminal. The dashed
+    //   line is just illustrating where the "borders" of this background should be.
+    // - The prompt shows up on the left, and leaves some space on the right for session metadata
+    // - The session metadata takes up two lines, so if the prompt isn't long enough, we jsut render an extra empty line
+    // - The cost is left-aligned within the session metadata, the cost is right aligned within the session metadata
+    // - There's a 1 cell padding on the left of the prompt and on the right of the session metadata.
 
-    // Move a soft highlight across the letters without changing their width.
-    const progress = Math.min(1, (Date.now() - startedAt) / SHINE_DURATION_MS);
-    const letters = [...text];
-    const position = -1 + progress * (letters.length + 1);
-    return letters
-      .map((letter, index) => {
-        const strength = Math.max(0, 1 - Math.abs(index - position) / 1.5);
-        const color = colors.base.map((base, channel) =>
-          Math.round(base + (colors.shine[channel] - base) * strength),
-        );
-        return foreground(color) + letter;
-      })
-      .join("");
-  }
+    // Render the session metadata first
+    const model = (() => {
+      const colors = COLORS.model;
 
-  private renderThinkingLevel(): string {
-    const level = {
-      "": "instant" as const,
-      off: "instant" as const,
-      low: "instant" as const,
-      medium: "medium" as const,
-      high: "high" as const,
-      xhigh: "high" as const,
-      max: "ultra" as const,
-    }[this.thinkingLevel ?? ""]!;
-    const colors = THINKING_COLORS[level];
-    return this.renderShine(level, colors, this.thinkingShineStartedAt);
-  }
+      // Account for the glint effect
+      if (this.glints.model.progress === 0) return colors.base + this.model;
 
-  override render(width: number): string[] {
-    const labelWidth = Math.max(0, Math.floor(width / 2) - 3);
-    const labels = [
-      {
-        text: `${this.renderShine(this.modelName, THINKING_COLORS.instant, this.modelShineStartedAt)}${STATUS_STYLE} · ${this.renderThinkingLevel()}`,
-        style: STATUS_STYLE,
-      },
-      {
-        text: `${this.directory}  ${COST_STYLE}$${this.getCost().toFixed(3)}`,
-        style: DIRECTORY_STYLE,
-      },
-    ].map(({ text, style }) => ({ text: truncateToWidth(text, labelWidth, ""), style }));
-    const sidebarContentWidth = Math.max(...labels.map(({ text }) => visibleWidth(text)));
-    const sidebarWidth = sidebarContentWidth > 0 ? sidebarContentWidth + 3 : 0;
-
-    // Mark the border rows temporarily to locate the prompt independently of
-    // autocomplete rows. These markers are removed before anything is displayed.
-    const borderMarker = "\0";
-    const borderColor = this.borderColor;
-    this.borderColor = (text) => borderMarker + text.replaceAll("─", " ");
-
-    try {
-      const lines = super.render(width - sidebarWidth);
-      const bottomBorder = lines.findIndex(
-        (line, index) => index > 0 && line.includes(borderMarker),
+      const glintIndex = Math.floor((this.glints.model.progress / 100) * this.model.length);
+      return (
+        // oxfmt-ignore
+        (colors.base + this.model.slice(0, glintIndex - 1)) +
+        (colors.glint + this.model.slice(glintIndex - 1, glintIndex + 2)) +
+        (colors.base + this.model.slice(glintIndex + 2))
       );
-      // Reuse the sidebar's extra padding below autocomplete when it is open.
-      // This gives the last suggestion breathing room without adding height.
-      const hasCompletions = lines.length > bottomBorder + 1;
-      const padding = " ".repeat(width - sidebarWidth);
-      lines.splice(hasCompletions ? lines.length : bottomBorder, 0, padding);
-      const middleRow = Math.floor(bottomBorder / 2);
+    })();
+    const separator = COLORS.separator + " · ";
+    const thinkingLevel = (() => {
+      const colors = COLORS.thinking(this.thinkingLevel);
 
-      for (let row = 0; row < lines.length; row++) {
-        const line = lines[row].replaceAll(borderMarker, "");
-        const { text: label = "", style = "" } = labels[row - middleRow] ?? {};
-        const sidebar = label
-          ? " ".repeat(sidebarWidth - visibleWidth(label) - 1) + style + label + RESET + " "
-          : " ".repeat(sidebarWidth);
-        lines[row] =
-          line + " ".repeat(Math.max(0, width - sidebarWidth - visibleWidth(line))) + sidebar;
-      }
+      // Account for the glint effect
+      if (this.glints.thinkingLevel.progress === 0) return colors.base + this.thinkingLevel;
 
-      return [
-        ...lines.map(
-          // The built-in cursor resets ANSI styles; restore the prompt colors after it.
-          (line) => PROMPT_STYLE + line.replaceAll(RESET, RESET + PROMPT_STYLE) + RESET,
-        ),
-        "",
-      ];
-    } finally {
-      this.borderColor = borderColor;
-    }
+      const glintIndex = Math.floor(
+        (this.glints.thinkingLevel.progress / 100) * this.thinkingLevel.length,
+      );
+      return (
+        // oxfmt-ignore
+        (colors.base + this.thinkingLevel.slice(0, glintIndex)) +
+        (colors.glint + this.thinkingLevel.slice(glintIndex, glintIndex + 1)) +
+        (colors.base + this.thinkingLevel.slice(glintIndex + 1))
+      );
+    })();
+    const cwd = COLORS.cwd + this.cwd;
+    const cost = COLORS.cost + `$${this.cost.toFixed(2)}`;
+
+    let sessionMetadata = [
+      // oxfmt-ignore
+      "   " + model + separator + thinkingLevel +' ',
+      // We'd like `justify-content: space-between;` for the cwd and cost, but we cannot calculate the number of spaces
+      // to print between them yet, since it depends on the total width of the session metadata section!
+      // To work around this, leave 3 spaces between them for now, calculate the width, then use that width to set the
+      // correct number of spaces. This works even if the model name + thinking level ends up being really short. We're
+      // effectively guaranteeing that there will be at least 3 spaces between them.
+      "   " + cwd + "   " + cost + " ",
+    ];
+
+    const sessionMetadataWidth = Math.max(
+      visibleWidth(sessionMetadata[0]),
+      visibleWidth(sessionMetadata[1]),
+    );
+
+    sessionMetadata[1] =
+      "   " +
+      cwd +
+      " ".repeat(
+        sessionMetadataWidth -
+          this.cwd
+            .length /* Subtract the length of the `cwd` string (the _value_, exclusing the control characters! */ -
+          5 /* Subtract the length of the `cost` string (always 5 characters) */ -
+          4 /* Account for the extra spaces */,
+      ) +
+      cost +
+      " ";
+
+    // Render the default editor, but strip out the top and bottom borders so we can render our own.
+    super.setPaddingX(1);
+    const lines = super
+      .render(width - sessionMetadataWidth)
+      // Filter out lines that are the border.
+      // Using 3 ─s ensures we don't accidentally strip out prompt lines that actually have that unicode character
+      .filter((l) => !l.includes("───"));
+
+    return [
+      // Custom top border, which is just an empty line with a background color
+      COLORS.background + " ".repeat(width),
+
+      // The prompt, `@` autocomplete, and everything else.
+      // We'll render the first and second lines separately from the rest so we can append the session metadata to them.
+      //
+      // Pi suffixes the cursor with the terminal reset control character. We want the background color of the
+      // entire prompt section to be the same, so surround each line with control characters to set the background
+      // color to counteract this.
+      COLORS.background +
+        (lines[0] ?? " ".repeat(width - sessionMetadataWidth)) +
+        COLORS.background +
+        truncateToWidth(sessionMetadata[0], sessionMetadataWidth, "", true),
+
+      COLORS.background +
+        (lines[1] ?? " ".repeat(width - sessionMetadataWidth)) +
+        COLORS.background +
+        truncateToWidth(sessionMetadata[1], sessionMetadataWidth, "", true),
+
+      // The remaining rendered lines.
+      ...lines
+        .slice(2)
+        .map((l) => truncateToWidth(COLORS.background + l + COLORS.background, width, "", true)),
+
+      // Custom bottom border, which is just an empty line with a background color
+      COLORS.background + " ".repeat(width),
+
+      // An extra empty line at the bottom so the editor does not stick to the bottom of the terminal for conversations
+      // that span the full height
+      "",
+    ];
   }
 }
 
-function getSessionCost(ctx: ExtensionContext): number {
-  // Match Pi's footer, including nested model calls and compaction summaries.
-  let cost = 0;
-  for (const entry of ctx.sessionManager.getEntries()) {
-    if (entry.type === "message") {
-      const message = entry.message;
-      if (message.role === "assistant" || message.role === "toolResult") {
-        cost += message.usage?.cost.total ?? 0;
-      }
-    } else if (entry.type === "branch_summary" || entry.type === "compaction") {
-      cost += entry.usage?.cost.total ?? 0;
+function getSessionCost(ctx: ExtensionContext) {
+  return ctx.sessionManager.getEntries().reduce((cost, e) => {
+    switch (e.type) {
+      case "message":
+        if (e.message.role !== "assistant" && e.message.role !== "toolResult") break;
+        return cost + (e.message.usage?.cost.total ?? 0);
+      case "branch_summary":
+      case "compaction":
+        return cost + (e.usage?.cost.total ?? 0);
+      default:
+        break;
     }
-  }
-  return cost;
+
+    return cost;
+  }, 0);
 }
 
 export default function (pi: ExtensionAPI) {
-  let editor: PromptEditor | undefined;
-
-  const updateStatus = (ctx: ExtensionContext) => {
-    editor?.setStatus(
-      ctx.model?.name ?? "No model",
-      pi.getThinkingLevel(),
-      basename(ctx.cwd) || ctx.cwd,
-    );
-  };
+  let editor: Editor | undefined;
 
   pi.on("session_start", (_, ctx) => {
     if (ctx.mode !== "tui") return;
 
+    ctx.ui.setFooter(() => ({ render: () => [], invalidate() {} }));
     ctx.ui.setEditorComponent((tui, theme, keybindings) => {
-      editor = new PromptEditor(tui, theme, keybindings);
-      editor.setPaddingX(1);
-      editor.getCost = () => getSessionCost(ctx);
-      updateStatus(ctx);
+      editor = new Editor(tui, theme, keybindings);
+      editor.model = ctx.model?.name ?? "(Unknown)";
+      editor.thinkingLevel = ctx.thinkingLevel ?? "off";
+      editor.cwd = basename(ctx.cwd);
+      editor.cost = getSessionCost(ctx);
       return editor;
     });
-
-    ctx.ui.setFooter(() => ({ render: () => [], invalidate() {} }));
   });
 
-  pi.on("model_select", (_event, ctx) => updateStatus(ctx));
-  pi.on("thinking_level_select", (_event, ctx) => updateStatus(ctx));
+  pi.on("model_select", (e) => {
+    if (!editor) return;
+
+    editor.model = e.model.name;
+    editor.enqueueGlint("model");
+  });
+
+  pi.on("thinking_level_select", (e) => {
+    if (!editor) return;
+
+    editor.thinkingLevel = e.level;
+    editor.enqueueGlint("thinkingLevel");
+  });
+
+  pi.on("turn_end", (_, ctx) => {
+    if (!editor) return;
+    editor.cost = getSessionCost(ctx);
+  });
+
   pi.on("session_shutdown", () => {
-    editor?.stopShine();
+    if (!editor) return;
+
+    editor.cancelGlint("model");
+    editor.cancelGlint("thinkingLevel");
     editor = undefined;
   });
 }
