@@ -80,9 +80,9 @@ in
             ".config/ssh/config"
 
             ".pi/agent/extensions/draw"
+            ".pi/agent/extensions/editor"
             ".pi/agent/extensions/keys"
             ".pi/agent/extensions/omlx"
-            ".pi/agent/extensions/prompt"
             ".pi/agent/extensions/webshot"
             ".pi/agent/skills"
             ".pi/agent/APPEND_SYSTEM.md"

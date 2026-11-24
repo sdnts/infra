@@ -49,17 +49,27 @@ class Editor extends CustomEditor {
   };
 
   enqueueGlint(target: "model" | "thinkingLevel") {
-    const increment = 10;
+    // We'll build a tiny render loop since that's all we really need.
+    //
+    // Let's set up some constants that will help us tune the animation.
+    // The animation progresses from 0% to 100%. Every `deltaMs`, we'll increment progress by `increment`. The `render()`
+    // function can then use this `progress` to drive an animation, such as using it to color a specific character of a
+    // word to a brighter color. This is what creates our "glint" effect.
     const deltaMs = 20;
+    const increment = 10;
     const durationMs = deltaMs * increment;
 
+    // Cancel any ongoing glints to make sure our increments work as expected
     this.cancelGlint(target);
     this.glints[target] = {
       progress: 0,
+      // Every `deltaMs` milliseconds, increment the progress, then force a re-render so that the progress is reflected
+      // in whatever `render()` uses it for.
       interval: setInterval(() => {
         this.glints[target].progress += increment;
         this.tui.requestRender();
       }, deltaMs),
+      // Once the animation "finishes", reset progress, and force a re-render.
       timeout: setTimeout(() => {
         clearInterval(this.glints[target].interval);
         this.glints[target].progress = 0;
