@@ -3,10 +3,10 @@
   "app.session.togglePath": [],
   "app.message.dequeue": [],
   "app.model.cycleForward": [
-    "shift+up"
+    "shift+right"
   ],
   "app.model.cycleBackward": [
-    "shift+down"
+    "shift+left"
   ],
   "app.thinking.cycle": [],
   "app.models.reorderUp": [],

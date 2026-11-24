@@ -2,7 +2,7 @@ import { ThinkingLevel } from "@earendil-works/pi-ai";
 import { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {
-  pi.registerShortcut("shift+right", {
+  pi.registerShortcut("shift+up", {
     description: "Increase thinking level",
     handler: (ctx) => {
       if (ctx.thinkingLevel === undefined) return;
@@ -21,7 +21,7 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerShortcut("shift+left", {
+  pi.registerShortcut("shift+down", {
     description: "Decrease thinking level",
     handler: (ctx) => {
       if (ctx.thinkingLevel === undefined) return;
