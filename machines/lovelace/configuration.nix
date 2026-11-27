@@ -15,7 +15,7 @@
   };
 
   homebrew = {
-    brews = [ ];
+    brews = [ "incoai/tap/splash" ];
     casks = [ ];
   };
 
