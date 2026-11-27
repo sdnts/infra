@@ -15,7 +15,21 @@
   };
 
   homebrew = {
-    brews = [ "incoai/tap/splash" ];
+    taps = [
+      {
+        name = "jundot/omlx";
+        clone_target = "https://github.com/jundot/omlx";
+      }
+    ];
+    brews = [
+      {
+        name = "jundot/omlx/omlx";
+        args = [ "with-custom-kernel" ];
+        start_service = true;
+        restart_service = "changed";
+      }
+      "incoai/tap/splash"
+    ];
     casks = [ ];
   };
 
