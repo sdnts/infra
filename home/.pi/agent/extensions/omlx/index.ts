@@ -33,7 +33,7 @@ export default function (pi: ExtensionAPI) {
         return res.models.map((m) => ({
           provider: "omlx",
           id: m.model_alias ?? m.id,
-          name: m.id,
+          name: m.model_alias ?? m.id,
           baseUrl,
           api: "openai-responses",
           input: ["text"],
