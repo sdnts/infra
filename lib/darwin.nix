@@ -68,7 +68,7 @@ in
 
     ]
     ++ lib.optionals isServer [ ]
-    ++ lib.optionals isTTY [ ]
+    ++ lib.optionals isTTY [ "ast-grep" ]
     ++ lib.optionals isHQ [ ];
 
     casks = [
