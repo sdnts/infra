@@ -12,7 +12,6 @@ let
 
   isServer = builtins.elem "server" config.infra.roles;
   isTTY = builtins.elem "tty" config.infra.roles;
-  isHQ = builtins.elem "hq" config.infra.roles;
 in
 {
   imports = [
@@ -68,15 +67,13 @@ in
 
     ]
     ++ lib.optionals isServer [ ]
-    ++ lib.optionals isTTY [ "ast-grep" ]
-    ++ lib.optionals isHQ [ ];
+    ++ lib.optionals isTTY [ "ast-grep" ];
 
     casks = [
 
     ]
     ++ lib.optionals isServer [ ]
-    ++ lib.optionals isTTY [ ]
-    ++ lib.optionals isHQ [ ];
+    ++ lib.optionals isTTY [ ];
   };
 
   # `home.nix` already installs a bunch of packages, so list packages here that are darwin-specific.
@@ -84,8 +81,7 @@ in
 
   ]
   ++ lib.optionals isServer [ ]
-  ++ lib.optionals isTTY [ ]
-  ++ lib.optionals isHQ [ ];
+  ++ lib.optionals isTTY [ ];
 
   services = {
     tailscale.enable = lib.mkDefault true;

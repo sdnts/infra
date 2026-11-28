@@ -17,16 +17,16 @@ the comments in it might be educational to fellow Nix nerds.
 
 ## Deployment
 
-The `deploy-rs` CLI is installed on all machines with the `hq` role. From such a node, running `deploy .` deploys all
+The `deploy-rs` CLI is installed on all machines with the `tty` role. From such a node, running `deploy .` deploys all
 profiles across all machines. Use `deploy .#<name>` to deploy all profiles to a specific node only (for example:
 `deploy .#lovelace`)
 
 ## dotfiles
 
 This directory has configurations for various tools I use. These are symlinked to the right location during profile
-activation. On machines with the `hq` roles, these are symlinked directly to a local checkout of this repository to allow
-quick changes without constant re-reployment. On all other machines, these are copied to the nix store and symlinked out of
-there.
+activation. On machines with the `infra.home` set to `"symlink"`, these are symlinked directly to a local checkout of
+this repository to allow quick changes without constant re-reployment. On all other machines, these are copied to the
+nix store and symlinked out of there.
 
 ## Secrets Management
 
@@ -34,13 +34,13 @@ All secrets are encrypted with [age](https://github.com/FiloSottile/age) and man
 
 `age` / `agenix` use SSH keys to encrypt and decrypt secrets. SSH keys for all operators & machines are defined in an
 [Identities file](./identity.nix). These identities are set up to be copied to the right machines. They control who can
-encrypt and / or read secrets. In general, HQ is always included, since I create secrets using HQ's SSH key. Machines
+encrypt and / or read secrets. In general, Hopper is always included, since I create secrets using HQ's SSH key. Machines
 that receive these secrets are also included so they can read the secret during deploy-rs' profile activation. For
 example, I run nginx on the Lamport machine, so the `nginx.age` secret is encrypted with both mine and Lamport's keys.
 
 ### Creating new secrets
 
-The `agenix` CLI is installed on all machines with the `hq` role. As such, only these nodes are able to create secrets:
+The `agenix` CLI is installed on the `hopper` machine. As such, only my MacBook is able to create secrets:
 1. Define what (SSH) public keys should be used for this secret. In [agenix-rules.nix](./agenix-rules.nix), add an
    attribute for this secret.
 2. Run `agenix -e secrets/<name>.age` to open up an editor where you can set this secret's value.
@@ -51,4 +51,4 @@ The `agenix` CLI is installed on all machines with the `hq` role. As such, only 
 ### Updating existing secrets
 
 Run `agenix -e secrets/<name>.nix` from a node whose SSH public key is allowed to decrypt / encrypt it. Ideally do this
-from an `hq` node.
+from Hopper.

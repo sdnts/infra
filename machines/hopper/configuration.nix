@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs, pkgs, ... }:
 {
   system.stateVersion = 7;
 
@@ -15,11 +15,14 @@
 
   home-manager.users.sdnts = {
     home.stateVersion = "26.05";
-    home.packages = [ ];
+    home.packages = [
+      inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.deploy.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ];
   };
 
   services = {
-    # On HQ, I'm forced to use the Tailscale app since it makes using Exit Nodes simple / possible
+    # On Hopper, I'm forced to use the Tailscale app since it makes using Exit Nodes simple / possible
     # This does mean that I cannot use Tailscale SSH, since the macOS GUI app does not yet support
     # logging in as root (and deploy-rs needs that to deploy the `system` profile)
     # So, for now, disable the Tailscale daemon and fall back to using OpenSSH instead.

@@ -163,8 +163,8 @@
               interactiveSudo = true;
               # This is the fun stuff. I'm calling a function called `deploy.lib.aarch64-darwin.activate.darwin` that
               # activates a profile. I'm in turn building that profile by calling the `darwin.lib.darwinSystem` function.
-              # The configuration of the system is in the `./machines/hq/default.nix` file, and `inputs` are forcefully
-              # injected into the hq module.
+              # The configuration of the system is in the `./machines/hopper/default.nix` file, and `inputs` are forcefully
+              # injected into the hopper module.
               path = deploy.lib.aarch64-darwin.activate.darwin self.darwinConfigurations.hopper;
             };
           };

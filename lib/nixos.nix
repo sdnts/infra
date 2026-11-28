@@ -10,7 +10,6 @@
 let
   isServer = builtins.elem "server" config.infra.roles;
   isTTY = builtins.elem "tty" config.infra.roles;
-  isHQ = builtins.elem "hq" config.infra.roles;
 in
 {
   imports = [
@@ -69,8 +68,7 @@ in
 
   ]
   ++ lib.optionals isServer [ pkgs.nethogs ]
-  ++ lib.optionals isTTY [ ]
-  ++ lib.optionals isHQ [ ];
+  ++ lib.optionals isTTY [ ];
 
   services = {
     # SSH access is controlled by Tailscale

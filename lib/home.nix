@@ -59,9 +59,6 @@ in
         pkgs.tree-sitter
         pkgs.ripgrep
 
-        inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
-        inputs.deploy.packages.${pkgs.stdenv.hostPlatform.system}.default
-
         pkgs.nodejs
         pkgs.pnpm
         inputs.pi.packages.${pkgs.stdenv.hostPlatform.system}.default
